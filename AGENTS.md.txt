@@ -1,0 +1,317 @@
+# AGENTS.md
+
+# Sistema de Gestión Administrativa y Control de Ayudas Sociales
+## Club de Leones de San Ramón
+
+## Objetivo del Proyecto
+
+Desarrollar una aplicación web para la gestión administrativa del Club de Leones de San Ramón.
+
+El sistema permitirá administrar:
+
+- Beneficiarios
+- Ayudas sociales
+- Donaciones
+- Campañas
+- Actividades
+- Voluntarios
+- Usuarios
+- Reportes
+
+El objetivo principal es centralizar toda la información en una única plataforma, reemplazando los procesos manuales.
+
+---
+
+# Arquitectura
+
+Utilizar siempre una arquitectura limpia y modular.
+
+Frontend
+    React + TypeScript + Vite
+
+Backend
+    ASP.NET Core Web API (.NET 9)
+
+Base de datos
+    PostgreSQL
+
+ORM
+    Entity Framework Core
+
+Autenticación
+    JWT + Roles
+
+Comunicación
+    REST API
+
+---
+
+# Principios
+
+El proyecto debe priorizar:
+
+- Código limpio
+- Principios SOLID
+- Clean Architecture cuando sea posible
+- Bajo acoplamiento
+- Alta cohesión
+- Componentes reutilizables
+- Escalabilidad
+- Seguridad
+- Mantenibilidad
+
+Nunca escribir código duplicado.
+
+---
+
+# Convenciones
+
+Siempre utilizar:
+
+TypeScript Strict Mode.
+
+Variables
+
+camelCase
+
+Funciones
+
+camelCase
+
+Componentes React
+
+PascalCase
+
+Clases C#
+
+PascalCase
+
+Interfaces
+
+Prefijo I
+
+Ejemplo
+
+IUserService
+
+Endpoints REST
+
+/api/v1/
+
+Ejemplo
+
+/api/v1/beneficiarios
+
+---
+
+# Base de Datos
+
+Utilizar PostgreSQL.
+
+Nunca utilizar MongoDB.
+
+Todas las relaciones deben modelarse correctamente mediante claves primarias y foráneas.
+
+Evitar columnas redundantes.
+
+Aplicar normalización hasta 3FN cuando sea posible.
+
+---
+
+# Backend
+
+Utilizar siempre:
+
+ASP.NET Core
+
+Entity Framework Core
+
+Dependency Injection
+
+Repository Pattern cuando aporte valor
+
+Services
+
+DTOs
+
+AutoMapper
+
+FluentValidation
+
+JWT Authentication
+
+Authorization por Roles
+
+Nunca colocar lógica de negocio dentro de los Controllers.
+
+---
+
+# Frontend
+
+Utilizar
+
+React
+
+TypeScript
+
+Material UI
+
+React Router
+
+Axios
+
+TanStack Query
+
+React Hook Form
+
+Zod
+
+Mantener componentes pequeños.
+
+Separar:
+
+Pages
+
+Components
+
+Layouts
+
+Hooks
+
+Services
+
+Types
+
+Utils
+
+---
+
+# Seguridad
+
+Toda petición debe validar autenticación.
+
+Nunca confiar en validaciones del Frontend.
+
+Validar siempre en Backend.
+
+Las contraseñas deben almacenarse únicamente mediante hash BCrypt.
+
+No almacenar secretos en el repositorio.
+
+Utilizar variables de entorno.
+
+---
+
+# Reportes
+
+El sistema deberá permitir exportar:
+
+PDF
+
+Excel
+
+Los gráficos utilizarán Chart.js.
+
+---
+
+# Git
+
+Utilizar Git Flow simplificado.
+
+Commits
+
+feat:
+
+fix:
+
+refactor:
+
+docs:
+
+style:
+
+test:
+
+chore:
+
+Nunca realizar cambios grandes en un único commit.
+
+---
+
+# Calidad
+
+Antes de finalizar cualquier funcionalidad verificar:
+
+Compila correctamente.
+
+No existen errores de TypeScript.
+
+No existen warnings importantes.
+
+El Backend inicia correctamente.
+
+La API responde.
+
+Las migraciones funcionan.
+
+No existen consultas innecesarias.
+
+---
+
+# Flujo de Trabajo
+
+Para cualquier nueva funcionalidad seguir este orden:
+
+1. Analizar requerimientos.
+
+2. Diseñar modelo de datos.
+
+3. Crear entidades.
+
+4. Crear migraciones.
+
+5. Crear DTOs.
+
+6. Crear servicios.
+
+7. Crear endpoints.
+
+8. Crear componentes React.
+
+9. Consumir API.
+
+10. Validar funcionalidad.
+
+11. Probar.
+
+12. Documentar.
+
+Nunca comenzar por la interfaz si el modelo de datos no está definido.
+
+---
+
+# Restricciones
+
+No agregar dependencias innecesarias.
+
+No sobreingenierizar soluciones.
+
+Mantener el proyecto simple.
+
+Toda funcionalidad debe responder a un requerimiento real del Club de Leones.
+
+---
+
+# Objetivo del Agente
+
+Cuando propongas soluciones:
+
+Prioriza claridad sobre complejidad.
+
+Explica las decisiones técnicas.
+
+Propón la estructura de carpetas antes de escribir grandes cantidades de código.
+
+Si existen varias soluciones, selecciona la más mantenible y explica brevemente por qué.
+
+Piensa siempre como un desarrollador Senior de Software.
