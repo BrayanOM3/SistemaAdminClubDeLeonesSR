@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "dgSpecHash": "RY5NsQ39Hns=",
+  "success": true,
+  "projectFilePath": "C:\\Proyectos progra\\SA_Club_De_Leones\\backend\\src\\SA.ClubDeLeones.Application\\SA.ClubDeLeones.Application.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Brayan\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
+    "C:\\Users\\Brayan\\.nuget\\packages\\fluentvalidation\\11.11.0\\fluentvalidation.11.11.0.nupkg.sha512",
+    "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\6.0.0\\microsoft.extensions.dependencyinjection.abstractions.6.0.0.nupkg.sha512",
+    "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.extensions.options\\6.0.0\\microsoft.extensions.options.6.0.0.nupkg.sha512",
+    "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.extensions.primitives\\6.0.0\\microsoft.extensions.primitives.6.0.0.nupkg.sha512",
+    "C:\\Users\\Brayan\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "message": "Package 'AutoMapper' 13.0.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x",
+      "projectPath": "C:\\Proyectos progra\\SA_Club_De_Leones\\backend\\src\\SA.ClubDeLeones.Application\\SA.ClubDeLeones.Application.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Proyectos progra\\SA_Club_De_Leones\\backend\\src\\SA.ClubDeLeones.Application\\SA.ClubDeLeones.Application.csproj",
+      "libraryId": "AutoMapper",
+      "targetGraphs": [
+        "net9.0"
+      ]
+    }
+  ]
+}
