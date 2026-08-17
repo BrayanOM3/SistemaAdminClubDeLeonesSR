@@ -5,7 +5,7 @@ using SA.ClubDeLeones.Infrastructure.Persistencia;
 
 namespace SA.ClubDeLeones.Infrastructure.Persistencia.Repositorios;
 
-public class AyudaSocialRepositorio : RepositorioBase<AyudaSocial>, IRepositorio<AyudaSocial>
+public class AyudaSocialRepositorio : RepositorioBase<AyudaSocial>, IAyudaSocialRepositorio
 {
     public AyudaSocialRepositorio(AppDbContext context) : base(context) { }
 

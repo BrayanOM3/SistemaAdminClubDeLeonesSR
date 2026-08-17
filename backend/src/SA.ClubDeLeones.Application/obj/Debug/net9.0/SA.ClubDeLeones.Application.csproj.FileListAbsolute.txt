@@ -1,0 +1,6 @@
+C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.Application\obj\Debug\net9.0\SA.ClubDeLeones.Application.csproj.AssemblyReference.cache
+C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.Application\obj\Debug\net9.0\SA.ClubDeLeones.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.Application\obj\Debug\net9.0\SA.ClubDeLeones.Application.AssemblyInfoInputs.cache
+C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.Application\obj\Debug\net9.0\SA.ClubDeLeones.Application.AssemblyInfo.cs
+C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.Application\obj\Debug\net9.0\SA.ClubDeLeones.Application.csproj.CoreCompileInputs.cache
+C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.Application\obj\Debug\net9.0\SA.ClubDeLeones.Application.sourcelink.json

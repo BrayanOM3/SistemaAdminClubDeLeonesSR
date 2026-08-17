@@ -7,27 +7,24 @@ public class ActividadVoluntario : EntidadBase
     public Guid ActividadId { get; private set; }
     public Guid VoluntarioId { get; private set; }
     public DateTime FechaParticipacion { get; private set; } = DateTime.UtcNow;
-    public string? Rol { get; private set; }
-    public string? Observaciones { get; private set; }
+    public string? RolEnActividad { get; private set; }
 
     // Relaciones
-    public Actividad Actividad { get; private set; } = null!;
-    public Voluntario Voluntario { get; private set; } = null!;
+    public Actividad? Actividad { get; private set; }
+    public Voluntario? Voluntario { get; private set; }
 
     private ActividadVoluntario() { }
 
-    public ActividadVoluntario(Guid actividadId, Guid voluntarioId, string? rol = null, string? observaciones = null)
+    public ActividadVoluntario(Guid actividadId, Guid voluntarioId, string? rolEnActividad = null)
     {
         ActividadId = actividadId;
         VoluntarioId = voluntarioId;
-        Rol = rol;
-        Observaciones = observaciones;
+        RolEnActividad = rolEnActividad;
     }
 
-    public void Actualizar(string? rol, string? observaciones)
+    public void ActualizarRol(string? rolEnActividad)
     {
-        Rol = rol;
-        Observaciones = observaciones;
+        RolEnActividad = rolEnActividad;
         MarcarActualizado();
     }
 }

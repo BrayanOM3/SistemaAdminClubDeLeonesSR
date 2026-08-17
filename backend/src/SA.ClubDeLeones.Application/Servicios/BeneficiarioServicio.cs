@@ -54,7 +54,7 @@ public class BeneficiarioServicio : IBeneficiarioServicio
             throw new InvalidOperationException("Ya existe otro beneficiario con esa cédula");
 
         _mapper.Map(dto, entidad);
-        entidad.FechaActualizacion = DateTime.UtcNow;
+        entidad.MarcarActualizado();
         _unitOfWork.Beneficiarios.Actualizar(entidad);
         await _unitOfWork.GuardarCambiosAsync();
         return _mapper.Map<BeneficiarioDto>(entidad);

@@ -6,28 +6,25 @@ public class CampanaVoluntario : EntidadBase
 {
     public Guid CampanaId { get; private set; }
     public Guid VoluntarioId { get; private set; }
-    public DateTime FechaVinculacion { get; private set; } = DateTime.UtcNow;
-    public string? Rol { get; private set; }
-    public string? Observaciones { get; private set; }
+    public DateTime FechaParticipacion { get; private set; } = DateTime.UtcNow;
+    public string? RolEnCampana { get; private set; }
 
     // Relaciones
-    public Campana Campana { get; private set; } = null!;
-    public Voluntario Voluntario { get; private set; } = null!;
+    public Campana? Campana { get; private set; }
+    public Voluntario? Voluntario { get; private set; }
 
     private CampanaVoluntario() { }
 
-    public CampanaVoluntario(Guid campanaId, Guid voluntarioId, string? rol = null, string? observaciones = null)
+    public CampanaVoluntario(Guid campanaId, Guid voluntarioId, string? rolEnCampana = null)
     {
         CampanaId = campanaId;
         VoluntarioId = voluntarioId;
-        Rol = rol;
-        Observaciones = observaciones;
+        RolEnCampana = rolEnCampana;
     }
 
-    public void Actualizar(string? rol, string? observaciones)
+    public void ActualizarRol(string? rolEnCampana)
     {
-        Rol = rol;
-        Observaciones = observaciones;
+        RolEnCampana = rolEnCampana;
         MarcarActualizado();
     }
 }

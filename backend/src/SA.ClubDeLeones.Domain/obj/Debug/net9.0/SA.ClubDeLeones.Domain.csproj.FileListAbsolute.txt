@@ -1,0 +1,12 @@
+C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.Domain\obj\Debug\net9.0\SA.ClubDeLeones.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.Domain\obj\Debug\net9.0\SA.ClubDeLeones.Domain.AssemblyInfoInputs.cache
+C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.Domain\obj\Debug\net9.0\SA.ClubDeLeones.Domain.AssemblyInfo.cs
+C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.Domain\obj\Debug\net9.0\SA.ClubDeLeones.Domain.csproj.CoreCompileInputs.cache
+C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.Domain\obj\Debug\net9.0\SA.ClubDeLeones.Domain.sourcelink.json
+C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.Domain\bin\Debug\net9.0\SA.ClubDeLeones.Domain.deps.json
+C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.Domain\bin\Debug\net9.0\SA.ClubDeLeones.Domain.dll
+C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.Domain\bin\Debug\net9.0\SA.ClubDeLeones.Domain.pdb
+C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.Domain\obj\Debug\net9.0\SA.ClubDeLeones.Domain.dll
+C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.Domain\obj\Debug\net9.0\refint\SA.ClubDeLeones.Domain.dll
+C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.Domain\obj\Debug\net9.0\SA.ClubDeLeones.Domain.pdb
+C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.Domain\obj\Debug\net9.0\ref\SA.ClubDeLeones.Domain.dll

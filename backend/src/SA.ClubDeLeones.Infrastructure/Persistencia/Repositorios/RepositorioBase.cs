@@ -38,16 +38,14 @@ public class RepositorioBase<T> : IRepositorio<T> where T : class
         return entidad;
     }
 
-    public async Task ActualizarAsync(T entidad, CancellationToken ct = default)
+    public void Actualizar(T entidad)
     {
         _dbSet.Update(entidad);
-        await Task.CompletedTask;
     }
 
-    public async Task EliminarAsync(T entidad, CancellationToken ct = default)
+    public void Eliminar(T entidad)
     {
         _dbSet.Remove(entidad);
-        await Task.CompletedTask;
     }
 
     public async Task<bool> ExisteAsync(

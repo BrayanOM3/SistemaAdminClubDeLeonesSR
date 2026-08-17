@@ -3,6 +3,7 @@ using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using SA.ClubDeLeones.Application.Interfaces.Servicios;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace SA.ClubDeLeones.Infrastructure.Exportacion;
 

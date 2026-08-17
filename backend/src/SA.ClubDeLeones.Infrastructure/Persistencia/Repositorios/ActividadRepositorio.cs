@@ -5,7 +5,7 @@ using SA.ClubDeLeones.Infrastructure.Persistencia;
 
 namespace SA.ClubDeLeones.Infrastructure.Persistencia.Repositorios;
 
-public class ActividadRepositorio : RepositorioBase<Actividad>, IRepositorio<Actividad>
+public class ActividadRepositorio : RepositorioBase<Actividad>, IActividadRepositorio
 {
     public ActividadRepositorio(AppDbContext context) : base(context) { }
 

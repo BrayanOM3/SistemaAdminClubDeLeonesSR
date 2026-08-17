@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "dgSpecHash": "HWD7D0QjXYI=",
-  "success": false,
+  "dgSpecHash": "6iskERtpgkA=",
+  "success": true,
   "projectFilePath": "C:\\Proyectos progra\\SA_Club_De_Leones\\backend\\src\\SA.ClubDeLeones.WebApi\\SA.ClubDeLeones.WebApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Brayan\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
@@ -25,12 +25,12 @@
     "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.codeanalysis.csharp.workspaces\\4.8.0\\microsoft.codeanalysis.csharp.workspaces.4.8.0.nupkg.sha512",
     "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.codeanalysis.workspaces.common\\4.8.0\\microsoft.codeanalysis.workspaces.common.4.8.0.nupkg.sha512",
     "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.codeanalysis.workspaces.msbuild\\4.8.0\\microsoft.codeanalysis.workspaces.msbuild.4.8.0.nupkg.sha512",
-    "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.entityframeworkcore\\9.0.0\\microsoft.entityframeworkcore.9.0.0.nupkg.sha512",
-    "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\9.0.0\\microsoft.entityframeworkcore.abstractions.9.0.0.nupkg.sha512",
-    "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\9.0.0\\microsoft.entityframeworkcore.analyzers.9.0.0.nupkg.sha512",
-    "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.entityframeworkcore.design\\9.0.0\\microsoft.entityframeworkcore.design.9.0.0.nupkg.sha512",
+    "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.entityframeworkcore\\9.0.1\\microsoft.entityframeworkcore.9.0.1.nupkg.sha512",
+    "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\9.0.1\\microsoft.entityframeworkcore.abstractions.9.0.1.nupkg.sha512",
+    "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\9.0.1\\microsoft.entityframeworkcore.analyzers.9.0.1.nupkg.sha512",
+    "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.entityframeworkcore.design\\9.0.1\\microsoft.entityframeworkcore.design.9.0.1.nupkg.sha512",
     "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\9.0.1\\microsoft.entityframeworkcore.relational.9.0.1.nupkg.sha512",
-    "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.entityframeworkcore.tools\\9.0.0\\microsoft.entityframeworkcore.tools.9.0.0.nupkg.sha512",
+    "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.entityframeworkcore.tools\\9.0.1\\microsoft.entityframeworkcore.tools.9.0.1.nupkg.sha512",
     "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\9.0.1\\microsoft.extensions.caching.abstractions.9.0.1.nupkg.sha512",
     "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.extensions.caching.memory\\9.0.1\\microsoft.extensions.caching.memory.9.0.1.nupkg.sha512",
@@ -38,7 +38,7 @@
     "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.extensions.configuration.binder\\9.0.0\\microsoft.extensions.configuration.binder.9.0.0.nupkg.sha512",
     "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\9.0.1\\microsoft.extensions.dependencyinjection.9.0.1.nupkg.sha512",
     "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.1\\microsoft.extensions.dependencyinjection.abstractions.9.0.1.nupkg.sha512",
-    "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.extensions.dependencymodel\\9.0.0\\microsoft.extensions.dependencymodel.9.0.0.nupkg.sha512",
+    "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.extensions.dependencymodel\\9.0.1\\microsoft.extensions.dependencymodel.9.0.1.nupkg.sha512",
     "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.extensions.diagnostics.abstractions\\9.0.0\\microsoft.extensions.diagnostics.abstractions.9.0.0.nupkg.sha512",
     "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.extensions.fileproviders.abstractions\\9.0.0\\microsoft.extensions.fileproviders.abstractions.9.0.0.nupkg.sha512",
     "C:\\Users\\Brayan\\.nuget\\packages\\microsoft.extensions.hosting.abstractions\\9.0.0\\microsoft.extensions.hosting.abstractions.9.0.0.nupkg.sha512",
@@ -85,29 +85,18 @@
     "C:\\Users\\Brayan\\.nuget\\packages\\system.io.pipelines\\7.0.0\\system.io.pipelines.7.0.0.nupkg.sha512",
     "C:\\Users\\Brayan\\.nuget\\packages\\system.reflection.metadata\\7.0.0\\system.reflection.metadata.7.0.0.nupkg.sha512",
     "C:\\Users\\Brayan\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
-    "C:\\Users\\Brayan\\.nuget\\packages\\system.text.json\\9.0.0\\system.text.json.9.0.0.nupkg.sha512",
+    "C:\\Users\\Brayan\\.nuget\\packages\\system.text.json\\9.0.1\\system.text.json.9.0.1.nupkg.sha512",
     "C:\\Users\\Brayan\\.nuget\\packages\\system.threading.channels\\7.0.0\\system.threading.channels.7.0.0.nupkg.sha512"
   ],
   "logs": [
     {
       "code": "NU1603",
       "level": "Warning",
-      "message": "SA.ClubDeLeones.Infrastructure depends on QuestPDF (>= 2024.12.6) but QuestPDF 2024.12.6 was not found. QuestPDF 2025.1.0 was resolved instead.",
+      "message": "SA.ClubDeLeones.Infrastructure depende de QuestPDF (>= 2024.12.6), pero no se encontró QuestPDF 2024.12.6. QuestPDF 2025.1.0 se resolvió en su lugar.",
       "projectPath": "C:\\Proyectos progra\\SA_Club_De_Leones\\backend\\src\\SA.ClubDeLeones.WebApi\\SA.ClubDeLeones.WebApi.csproj",
       "warningLevel": 1,
       "filePath": "C:\\Proyectos progra\\SA_Club_De_Leones\\backend\\src\\SA.ClubDeLeones.WebApi\\SA.ClubDeLeones.WebApi.csproj",
       "libraryId": "QuestPDF",
-      "targetGraphs": [
-        "net9.0"
-      ]
-    },
-    {
-      "code": "NU1605",
-      "level": "Error",
-      "message": "Warning As Error: Detected package downgrade: Microsoft.EntityFrameworkCore from 9.0.1 to 9.0.0. Reference the package directly from the project to select a different version. \r\n SA.ClubDeLeones.WebApi -> SA.ClubDeLeones.Infrastructure -> Npgsql.EntityFrameworkCore.PostgreSQL 9.0.3 -> Microsoft.EntityFrameworkCore (>= 9.0.1 && < 10.0.0) \r\n SA.ClubDeLeones.WebApi -> SA.ClubDeLeones.Infrastructure -> Microsoft.EntityFrameworkCore (>= 9.0.0)",
-      "projectPath": "C:\\Proyectos progra\\SA_Club_De_Leones\\backend\\src\\SA.ClubDeLeones.WebApi\\SA.ClubDeLeones.WebApi.csproj",
-      "filePath": "C:\\Proyectos progra\\SA_Club_De_Leones\\backend\\src\\SA.ClubDeLeones.WebApi\\SA.ClubDeLeones.WebApi.csproj",
-      "libraryId": "Microsoft.EntityFrameworkCore",
       "targetGraphs": [
         "net9.0"
       ]

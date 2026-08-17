@@ -11,8 +11,8 @@ public class ActividadBeneficiario : EntidadBase
     public string? Observaciones { get; private set; }
 
     // Relaciones
-    public Actividad Actividad { get; private set; } = null!;
-    public Beneficiario Beneficiario { get; private set; } = null!;
+    public Actividad? Actividad { get; private set; }
+    public Beneficiario? Beneficiario { get; private set; }
 
     private ActividadBeneficiario() { }
 
@@ -24,7 +24,7 @@ public class ActividadBeneficiario : EntidadBase
         Observaciones = observaciones;
     }
 
-    public void Actualizar(bool asistio, string? observaciones)
+    public void MarcarAsistencia(bool asistio, string? observaciones = null)
     {
         Asistio = asistio;
         Observaciones = observaciones;

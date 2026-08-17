@@ -1,5 +1,6 @@
 using SA.ClubDeLeones.Domain.Common;
 using SA.ClubDeLeones.Domain.Enums;
+using SA.ClubDeLeones.Domain.Entidades.Relaciones;
 
 namespace SA.ClubDeLeones.Domain.Entidades;
 

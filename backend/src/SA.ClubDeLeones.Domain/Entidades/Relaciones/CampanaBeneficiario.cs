@@ -6,12 +6,12 @@ public class CampanaBeneficiario : EntidadBase
 {
     public Guid CampanaId { get; private set; }
     public Guid BeneficiarioId { get; private set; }
-    public DateTime FechaVinculacion { get; private set; } = DateTime.UtcNow;
+    public DateTime FechaAsignacion { get; private set; } = DateTime.UtcNow;
     public string? Observaciones { get; private set; }
 
     // Relaciones
-    public Campana Campana { get; private set; } = null!;
-    public Beneficiario Beneficiario { get; private set; } = null!;
+    public Campana? Campana { get; private set; }
+    public Beneficiario? Beneficiario { get; private set; }
 
     private CampanaBeneficiario() { }
 
@@ -22,7 +22,7 @@ public class CampanaBeneficiario : EntidadBase
         Observaciones = observaciones;
     }
 
-    public void Actualizar(string? observaciones)
+    public void ActualizarObservaciones(string? observaciones)
     {
         Observaciones = observaciones;
         MarcarActualizado();

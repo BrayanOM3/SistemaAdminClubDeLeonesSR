@@ -5,7 +5,7 @@ using SA.ClubDeLeones.Infrastructure.Persistencia;
 
 namespace SA.ClubDeLeones.Infrastructure.Persistencia.Repositorios;
 
-public class UsuarioRepositorio : RepositorioBase<Usuario>, IRepositorio<Usuario>
+public class UsuarioRepositorio : RepositorioBase<Usuario>, IUsuarioRepositorio
 {
     public UsuarioRepositorio(AppDbContext context) : base(context) { }
 
