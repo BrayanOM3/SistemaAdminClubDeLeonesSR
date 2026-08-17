@@ -48,7 +48,7 @@ public class DonacionServicio : IDonacionServicio
             ?? throw new KeyNotFoundException("Donación no encontrada");
 
         _mapper.Map(dto, entidad);
-        entidad.FechaActualizacion = DateTime.UtcNow;
+        entidad.MarcarActualizado();
         _unitOfWork.Donaciones.Actualizar(entidad);
         await _unitOfWork.GuardarCambiosAsync();
         return _mapper.Map<DonacionDto>(entidad);

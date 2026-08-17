@@ -101,37 +101,45 @@ public sealed class ServicioPdf : IServicioPdf
                     });
                 });
 
-                page.Content().Table(table =>
+                page.Content().Element(content =>
                 {
-                    table.ColumnsDefinition(columnsDef =>
+                    if (listaDatos.Count == 0)
                     {
-                        foreach (var _ in columnas)
-                        {
-                            columnsDef.RelativeColumn();
-                        }
-                    });
+                        content.AlignCenter().Text("No hay datos para mostrar").FontSize(12).FontColor(Colors.Grey.Medium);
+                        return;
+                    }
 
-                    table.Header(header =>
+                    content.Table(table =>
                     {
-                        foreach (var (_, encabezado) in columnas)
+                        table.ColumnsDefinition(columnsDef =>
                         {
-                            header.Cell().Element(cell => EstiloCeldaEncabezado(cell, encabezado));
-                        }
-                    });
+                            foreach (var _ in columnas)
+                            {
+                                columnsDef.RelativeColumn();
+                            }
+                        });
 
-                    var filaPar = false;
-                    foreach (var item in listaDatos)
-                    {
-                        table.Row(row =>
+                        // Header
+                        table.Header(header =>
+                        {
+                            foreach (var (_, encabezado) in columnas)
+                            {
+                                header.Cell().Element(cell => EstiloCeldaEncabezado(cell, encabezado));
+                            }
+                        });
+
+                        // Rows
+                        var filaPar = false;
+                        foreach (var item in listaDatos)
                         {
                             foreach (var (propiedad, _) in columnas)
                             {
                                 var valor = ObtenerValorPropiedad(item, propiedad);
-                                row.Cell().Element(cell => EstiloCeldaDato(cell, valor, filaPar));
+                                table.Cell().Element(c => EstiloCeldaDato(c, valor, filaPar));
                             }
-                        });
-                        filaPar = !filaPar;
-                    }
+                            filaPar = !filaPar;
+                        }
+                    });
                 });
 
                 page.Footer().AlignCenter().Text(text =>
@@ -145,7 +153,7 @@ public sealed class ServicioPdf : IServicioPdf
         }).GeneratePdf();
     }
 
-    private static void EstiloCeldaEncabezado(Cell cell, string texto)
+    private static void EstiloCeldaEncabezado(IContainer cell, string texto)
     {
         cell.Background(Colors.Blue.Darken2)
           .Padding(4)
@@ -158,7 +166,7 @@ public sealed class ServicioPdf : IServicioPdf
           .AlignCenter();
     }
 
-    private static void EstiloCeldaDato(Cell cell, string? valor, bool filaPar)
+    private static void EstiloCeldaDato(IContainer cell, string? valor, bool filaPar)
     {
         cell.Padding(3)
           .BorderBottom(0.5f)

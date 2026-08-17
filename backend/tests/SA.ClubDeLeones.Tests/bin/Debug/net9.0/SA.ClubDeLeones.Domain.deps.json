@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v9.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v9.0": {
+      "SA.ClubDeLeones.Domain/1.0.0": {
+        "runtime": {
+          "SA.ClubDeLeones.Domain.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "SA.ClubDeLeones.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

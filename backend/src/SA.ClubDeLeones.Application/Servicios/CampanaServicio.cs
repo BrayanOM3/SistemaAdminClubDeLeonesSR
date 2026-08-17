@@ -30,7 +30,7 @@ public class CampanaServicio : ICampanaServicio
 
     public async Task<IReadOnlyList<CampanaDto>> ObtenerActivasAsync()
     {
-        var entidades = await _unitOfWork.Campanas.ObtenerPorEstadoAsync(Domain.Enums.EstadoCampana.Activa);
+        var entidades = await _unitOfWork.Campanas.ObtenerActivasAsync();
         return _mapper.Map<IReadOnlyList<CampanaDto>>(entidades);
     }
 
@@ -48,7 +48,7 @@ public class CampanaServicio : ICampanaServicio
             ?? throw new KeyNotFoundException("Campaña no encontrada");
 
         _mapper.Map(dto, entidad);
-        entidad.FechaActualizacion = DateTime.UtcNow;
+        entidad.MarcarActualizado();
         _unitOfWork.Campanas.Actualizar(entidad);
         await _unitOfWork.GuardarCambiosAsync();
         return _mapper.Map<CampanaDto>(entidad);

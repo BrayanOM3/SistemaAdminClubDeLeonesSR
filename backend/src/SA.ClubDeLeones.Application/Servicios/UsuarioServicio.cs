@@ -90,7 +90,7 @@ public class UsuarioServicio : IUsuarioServicio
         }
 
         _mapper.Map(dto, entidad);
-        entidad.FechaActualizacion = DateTime.UtcNow;
+        entidad.MarcarActualizado();
         _unitOfWork.Usuarios.Actualizar(entidad);
         await _unitOfWork.GuardarCambiosAsync();
         return _mapper.Map<UsuarioDto>(entidad);

@@ -54,7 +54,7 @@ public class VoluntarioServicio : IVoluntarioServicio
             throw new InvalidOperationException("Ya existe otro voluntario con esa cédula");
 
         _mapper.Map(dto, entidad);
-        entidad.FechaActualizacion = DateTime.UtcNow;
+        entidad.MarcarActualizado();
         _unitOfWork.Voluntarios.Actualizar(entidad);
         await _unitOfWork.GuardarCambiosAsync();
         return _mapper.Map<VoluntarioDto>(entidad);

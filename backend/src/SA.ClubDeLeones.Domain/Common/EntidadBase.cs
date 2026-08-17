@@ -6,7 +6,7 @@ public abstract class EntidadBase
     public DateTime FechaCreacion { get; protected set; } = DateTime.UtcNow;
     public DateTime? FechaActualizacion { get; protected set; }
 
-    protected void MarcarActualizado() => FechaActualizacion = DateTime.UtcNow;
+    public void MarcarActualizado() => FechaActualizacion = DateTime.UtcNow;
 
     public override bool Equals(object? obj)
     {

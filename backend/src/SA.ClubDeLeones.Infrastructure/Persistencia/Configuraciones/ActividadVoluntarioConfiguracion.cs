@@ -21,11 +21,8 @@ public class ActividadVoluntarioConfiguracion : IEntityTypeConfiguration<Activid
         builder.Property(av => av.FechaParticipacion)
             .IsRequired();
 
-        builder.Property(av => av.Rol)
+        builder.Property(av => av.RolEnActividad)
             .HasMaxLength(100);
-
-        builder.Property(av => av.Observaciones)
-            .HasMaxLength(500);
 
         builder.Property(av => av.FechaCreacion)
             .IsRequired();

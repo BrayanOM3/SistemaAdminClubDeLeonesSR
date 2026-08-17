@@ -54,7 +54,7 @@ public class AyudaSocialServicio : IAyudaSocialServicio
             ?? throw new KeyNotFoundException("Ayuda social no encontrada");
 
         _mapper.Map(dto, entidad);
-        entidad.FechaActualizacion = DateTime.UtcNow;
+        entidad.MarcarActualizado();
         _unitOfWork.AyudasSociales.Actualizar(entidad);
         await _unitOfWork.GuardarCambiosAsync();
         return _mapper.Map<AyudaSocialDto>(entidad);

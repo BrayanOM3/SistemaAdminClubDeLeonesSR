@@ -1,0 +1,6 @@
+{
+  "SA.ClubDeLeones.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Proyectos progra\\SA_Club_De_Leones\\backend\\src\\SA.ClubDeLeones.Application",
+  "SA.ClubDeLeones.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Proyectos progra\\SA_Club_De_Leones\\backend\\src\\SA.ClubDeLeones.Domain",
+  "SA.ClubDeLeones.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Proyectos progra\\SA_Club_De_Leones\\backend\\src\\SA.ClubDeLeones.Infrastructure",
+  "SA.ClubDeLeones.WebApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Proyectos progra\\SA_Club_De_Leones\\backend\\src\\SA.ClubDeLeones.WebApi"
+}

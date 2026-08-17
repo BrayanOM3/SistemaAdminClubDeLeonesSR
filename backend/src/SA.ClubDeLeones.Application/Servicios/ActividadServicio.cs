@@ -48,7 +48,7 @@ public class ActividadServicio : IActividadServicio
             ?? throw new KeyNotFoundException("Actividad no encontrada");
 
         _mapper.Map(dto, entidad);
-        entidad.FechaActualizacion = DateTime.UtcNow;
+        entidad.MarcarActualizado();
         _unitOfWork.Actividades.Actualizar(entidad);
         await _unitOfWork.GuardarCambiosAsync();
         return _mapper.Map<ActividadDto>(entidad);

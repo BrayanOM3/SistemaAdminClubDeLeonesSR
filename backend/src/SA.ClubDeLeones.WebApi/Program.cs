@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SA.ClubDeLeones.Infrastructure;
 using SA.ClubDeLeones.Infrastructure.Autenticacion;
+using SA.ClubDeLeones.WebApi.Middleware;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);

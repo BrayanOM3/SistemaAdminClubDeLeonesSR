@@ -8,13 +8,13 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly AppDbContext _context;
 
-    public IRepositorio<Beneficiario> Beneficiarios { get; }
-    public IRepositorio<AyudaSocial> AyudasSociales { get; }
-    public IRepositorio<Campana> Campanas { get; }
-    public IRepositorio<Donacion> Donaciones { get; }
-    public IRepositorio<Voluntario> Voluntarios { get; }
-    public IRepositorio<Usuario> Usuarios { get; }
-    public IRepositorio<Actividad> Actividades { get; }
+    public IBeneficiarioRepositorio Beneficiarios { get; }
+    public IAyudaSocialRepositorio AyudasSociales { get; }
+    public ICampanaRepositorio Campanas { get; }
+    public IDonacionRepositorio Donaciones { get; }
+    public IVoluntarioRepositorio Voluntarios { get; }
+    public IUsuarioRepositorio Usuarios { get; }
+    public IActividadRepositorio Actividades { get; }
 
     public UnitOfWork(AppDbContext context)
     {
