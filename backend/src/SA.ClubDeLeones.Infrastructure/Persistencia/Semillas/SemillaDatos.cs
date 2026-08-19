@@ -18,6 +18,7 @@ public static class SemillaDatos
             passwordHash: passwordHash,
             rol: RolUsuario.Administrador
         );
+        admin.MarcarActualizado();
 
         context.Usuarios.Add(admin);
         context.SaveChanges();

@@ -46,7 +46,7 @@ public class UsuarioConfiguracion : IEntityTypeConfiguration<Usuario>
             .IsRequired();
 
         builder.Property(u => u.FechaActualizacion)
-            .IsRequired();
+            .IsRequired(false);
 
         // Relación 1:0/1 con Voluntario
         builder.HasOne(u => u.Voluntario)

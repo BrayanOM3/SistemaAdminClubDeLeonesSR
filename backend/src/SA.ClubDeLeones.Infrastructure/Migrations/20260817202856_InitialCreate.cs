@@ -242,7 +242,7 @@ namespace SA.ClubDeLeones.Infrastructure.Migrations
                     Estado = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     VoluntarioId = table.Column<Guid>(type: "uuid", nullable: true),
                     FechaCreacion = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    FechaActualizacion = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    FechaActualizacion = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
