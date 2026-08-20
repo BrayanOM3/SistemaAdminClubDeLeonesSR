@@ -2,6 +2,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SA.ClubDeLeones.Application.Interfaces.Servicios;
 using SA.ClubDeLeones.Domain.Entidades;
+using SA.ClubDeLeones.Domain.Enums;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -24,7 +25,7 @@ public sealed class ServicioJwt : IServicioJwt
             new(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
             new(ClaimTypes.Name, usuario.NombreUsuario),
             new(ClaimTypes.Email, usuario.Correo),
-            new(ClaimTypes.Role, usuario.Rol.ToString())
+            new(ClaimTypes.Role, Enum.GetName(typeof(RolUsuario), usuario.Rol) ?? usuario.Rol.ToString())
         };
 
         if (usuario.VoluntarioId.HasValue)

@@ -4,7 +4,7 @@ public abstract class EntidadBase
 {
     public Guid Id { get; protected set; } = Guid.NewGuid();
     public DateTime FechaCreacion { get; protected set; } = DateTime.UtcNow;
-    public DateTime? FechaActualizacion { get; protected set; }
+    public DateTime? FechaActualizacion { get; protected set; } = DateTime.UtcNow;
 
     public void MarcarActualizado() => FechaActualizacion = DateTime.UtcNow;
 

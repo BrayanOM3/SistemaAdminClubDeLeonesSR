@@ -25,13 +25,15 @@ public class VoluntarioServicio : IVoluntarioServicio
     public async Task<IReadOnlyList<VoluntarioDto>> ObtenerTodosAsync()
     {
         var entidades = await _unitOfWork.Voluntarios.ObtenerTodosAsync();
-        return _mapper.Map<IReadOnlyList<VoluntarioDto>>(entidades);
+        var lista = _mapper.Map<List<VoluntarioDto>>(entidades);
+        return lista.AsReadOnly();
     }
 
     public async Task<IReadOnlyList<VoluntarioDto>> ObtenerActivosAsync()
     {
         var entidades = await _unitOfWork.Voluntarios.ObtenerPorEstadoAsync(Domain.Enums.EstadoUsuario.Activo);
-        return _mapper.Map<IReadOnlyList<VoluntarioDto>>(entidades);
+        var lista = _mapper.Map<List<VoluntarioDto>>(entidades);
+        return lista.AsReadOnly();
     }
 
     public async Task<VoluntarioDto> CrearAsync(CrearVoluntarioDto dto)

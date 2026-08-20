@@ -25,13 +25,15 @@ public class ActividadServicio : IActividadServicio
     public async Task<IReadOnlyList<ActividadDto>> ObtenerTodosAsync()
     {
         var entidades = await _unitOfWork.Actividades.ObtenerTodosAsync();
-        return _mapper.Map<IReadOnlyList<ActividadDto>>(entidades);
+        var lista = _mapper.Map<List<ActividadDto>>(entidades);
+        return lista.AsReadOnly();
     }
 
     public async Task<IReadOnlyList<ActividadDto>> ObtenerPorCampanaAsync(Guid campanaId)
     {
         var entidades = await _unitOfWork.Actividades.ObtenerPorCampanaAsync(campanaId);
-        return _mapper.Map<IReadOnlyList<ActividadDto>>(entidades);
+        var lista = _mapper.Map<List<ActividadDto>>(entidades);
+        return lista.AsReadOnly();
     }
 
     public async Task<ActividadDto> CrearAsync(CrearActividadDto dto)

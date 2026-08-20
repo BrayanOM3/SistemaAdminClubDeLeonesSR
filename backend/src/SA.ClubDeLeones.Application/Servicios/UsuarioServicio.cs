@@ -27,7 +27,8 @@ public class UsuarioServicio : IUsuarioServicio
     public async Task<IReadOnlyList<UsuarioDto>> ObtenerTodosAsync()
     {
         var entidades = await _unitOfWork.Usuarios.ObtenerTodosAsync();
-        return _mapper.Map<IReadOnlyList<UsuarioDto>>(entidades);
+        var lista = _mapper.Map<List<UsuarioDto>>(entidades);
+        return lista.AsReadOnly();
     }
 
     public async Task<UsuarioDto?> ObtenerPorNombreUsuarioAsync(string nombreUsuario)

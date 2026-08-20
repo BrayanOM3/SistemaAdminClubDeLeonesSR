@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SA.ClubDeLeones.Application.Interfaces.Servicios;
+using SA.ClubDeLeones.Application.Servicios;
 using SA.ClubDeLeones.Domain.Interfaces;
 using SA.ClubDeLeones.Infrastructure.Autenticacion;
 using SA.ClubDeLeones.Infrastructure.Exportacion;
@@ -35,6 +36,14 @@ public static class InyeccionDependencias
 
         services.AddScoped<IEncriptadorPassword, EncriptadorPassword>();
         services.AddScoped<IServicioJwt, ServicioJwt>();
+        services.AddScoped<IAutenticacionServicio, AutenticacionServicio>();
+        services.AddScoped<IUsuarioServicio, UsuarioServicio>();
+        services.AddScoped<IBeneficiarioServicio, BeneficiarioServicio>();
+        services.AddScoped<ICampanaServicio, CampanaServicio>();
+        services.AddScoped<IDonacionServicio, DonacionServicio>();
+        services.AddScoped<IVoluntarioServicio, VoluntarioServicio>();
+        services.AddScoped<IAyudaSocialServicio, AyudaSocialServicio>();
+        services.AddScoped<IActividadServicio, ActividadServicio>();
 
         services.Configure<JwtOpciones>(configuration.GetSection("Jwt"));
 

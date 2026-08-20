@@ -25,13 +25,15 @@ public class DonacionServicio : IDonacionServicio
     public async Task<IReadOnlyList<DonacionDto>> ObtenerTodosAsync()
     {
         var entidades = await _unitOfWork.Donaciones.ObtenerTodosAsync();
-        return _mapper.Map<IReadOnlyList<DonacionDto>>(entidades);
+        var lista = _mapper.Map<List<DonacionDto>>(entidades);
+        return lista.AsReadOnly();
     }
 
     public async Task<IReadOnlyList<DonacionDto>> ObtenerPorCampanaAsync(Guid campanaId)
     {
         var entidades = await _unitOfWork.Donaciones.ObtenerPorCampanaAsync(campanaId);
-        return _mapper.Map<IReadOnlyList<DonacionDto>>(entidades);
+        var lista = _mapper.Map<List<DonacionDto>>(entidades);
+        return lista.AsReadOnly();
     }
 
     public async Task<DonacionDto> CrearAsync(CrearDonacionDto dto)

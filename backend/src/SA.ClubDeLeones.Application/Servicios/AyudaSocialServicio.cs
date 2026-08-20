@@ -25,19 +25,22 @@ public class AyudaSocialServicio : IAyudaSocialServicio
     public async Task<IReadOnlyList<AyudaSocialDto>> ObtenerTodosAsync()
     {
         var entidades = await _unitOfWork.AyudasSociales.ObtenerTodosAsync();
-        return _mapper.Map<IReadOnlyList<AyudaSocialDto>>(entidades);
+        var lista = _mapper.Map<List<AyudaSocialDto>>(entidades);
+        return lista.AsReadOnly();
     }
 
     public async Task<IReadOnlyList<AyudaSocialDto>> ObtenerPorBeneficiarioAsync(Guid beneficiarioId)
     {
         var entidades = await _unitOfWork.AyudasSociales.ObtenerPorBeneficiarioAsync(beneficiarioId);
-        return _mapper.Map<IReadOnlyList<AyudaSocialDto>>(entidades);
+        var lista = _mapper.Map<List<AyudaSocialDto>>(entidades);
+        return lista.AsReadOnly();
     }
 
     public async Task<IReadOnlyList<AyudaSocialDto>> ObtenerPorCampanaAsync(Guid campanaId)
     {
         var entidades = await _unitOfWork.AyudasSociales.ObtenerPorCampanaAsync(campanaId);
-        return _mapper.Map<IReadOnlyList<AyudaSocialDto>>(entidades);
+        var lista = _mapper.Map<List<AyudaSocialDto>>(entidades);
+        return lista.AsReadOnly();
     }
 
     public async Task<AyudaSocialDto> CrearAsync(CrearAyudaSocialDto dto)

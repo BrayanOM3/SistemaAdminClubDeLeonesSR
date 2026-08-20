@@ -25,13 +25,15 @@ public class BeneficiarioServicio : IBeneficiarioServicio
     public async Task<IReadOnlyList<BeneficiarioDto>> ObtenerTodosAsync()
     {
         var entidades = await _unitOfWork.Beneficiarios.ObtenerTodosAsync();
-        return _mapper.Map<IReadOnlyList<BeneficiarioDto>>(entidades);
+        var lista = _mapper.Map<List<BeneficiarioDto>>(entidades);
+        return lista.AsReadOnly();
     }
 
     public async Task<IReadOnlyList<BeneficiarioDto>> ObtenerActivosAsync()
     {
         var entidades = await _unitOfWork.Beneficiarios.ObtenerPorEstadoAsync(Domain.Enums.EstadoBeneficiario.Activo);
-        return _mapper.Map<IReadOnlyList<BeneficiarioDto>>(entidades);
+        var lista = _mapper.Map<List<BeneficiarioDto>>(entidades);
+        return lista.AsReadOnly();
     }
 
     public async Task<BeneficiarioDto> CrearAsync(CrearBeneficiarioDto dto)
