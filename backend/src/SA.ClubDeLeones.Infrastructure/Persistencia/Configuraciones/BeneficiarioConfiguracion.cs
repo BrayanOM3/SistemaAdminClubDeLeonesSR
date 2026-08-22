@@ -49,7 +49,7 @@ public class BeneficiarioConfiguracion : IEntityTypeConfiguration<Beneficiario>
             .IsRequired();
 
         builder.Property(b => b.FechaActualizacion)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(b => b.Estado)
             .IsRequired()

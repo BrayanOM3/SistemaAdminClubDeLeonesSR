@@ -3,10 +3,16 @@ namespace SA.ClubDeLeones.Domain.Common;
 public abstract class EntidadBase
 {
     public Guid Id { get; protected set; } = Guid.NewGuid();
-    public DateTime FechaCreacion { get; protected set; } = DateTime.UtcNow;
-    public DateTime? FechaActualizacion { get; protected set; } = DateTime.UtcNow;
+    public DateTime FechaCreacion { get; protected set; }
+    public DateTime? FechaActualizacion { get; protected set; }
 
-    public void MarcarActualizado() => FechaActualizacion = DateTime.UtcNow;
+    protected EntidadBase()
+    {
+        FechaCreacion = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
+        FechaActualizacion = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
+    }
+
+    public void MarcarActualizado() => FechaActualizacion = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
 
     public override bool Equals(object? obj)
     {

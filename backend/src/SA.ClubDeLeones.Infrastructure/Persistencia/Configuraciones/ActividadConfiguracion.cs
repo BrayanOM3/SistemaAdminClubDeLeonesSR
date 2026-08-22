@@ -37,7 +37,7 @@ public class ActividadConfiguracion : IEntityTypeConfiguration<Actividad>
             .IsRequired();
 
         builder.Property(a => a.FechaActualizacion)
-            .IsRequired();
+            .IsRequired(false);
 
         // Relaciones
         builder.HasOne(a => a.Campana)

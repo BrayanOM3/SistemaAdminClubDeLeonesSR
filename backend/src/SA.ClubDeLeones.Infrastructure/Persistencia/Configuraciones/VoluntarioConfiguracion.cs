@@ -43,7 +43,7 @@ public class VoluntarioConfiguracion : IEntityTypeConfiguration<Voluntario>
             .IsRequired();
 
         builder.Property(v => v.FechaActualizacion)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(v => v.Estado)
             .IsRequired()

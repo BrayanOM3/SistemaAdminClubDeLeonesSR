@@ -28,7 +28,7 @@ public class ActividadVoluntarioConfiguracion : IEntityTypeConfiguration<Activid
             .IsRequired();
 
         builder.Property(av => av.FechaActualizacion)
-            .IsRequired();
+            .IsRequired(false);
 
         // Relaciones
         builder.HasOne(av => av.Actividad)

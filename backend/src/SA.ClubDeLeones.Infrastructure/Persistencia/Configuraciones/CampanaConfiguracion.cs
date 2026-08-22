@@ -44,7 +44,7 @@ public class CampanaConfiguracion : IEntityTypeConfiguration<Campana>
             .IsRequired();
 
         builder.Property(c => c.FechaActualizacion)
-            .IsRequired();
+            .IsRequired(false);
 
         // Relaciones
         builder.HasMany(c => c.Donaciones)

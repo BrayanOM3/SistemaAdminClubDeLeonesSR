@@ -32,7 +32,7 @@ public class ActividadBeneficiarioConfiguracion : IEntityTypeConfiguration<Activ
             .IsRequired();
 
         builder.Property(ab => ab.FechaActualizacion)
-            .IsRequired();
+            .IsRequired(false);
 
         // Relaciones
         builder.HasOne(ab => ab.Actividad)

@@ -38,7 +38,7 @@ public class AyudaSocialConfiguracion : IEntityTypeConfiguration<AyudaSocial>
             .IsRequired();
 
         builder.Property(a => a.FechaActualizacion)
-            .IsRequired();
+            .IsRequired(false);
 
         builder.Property(a => a.Estado)
             .IsRequired()

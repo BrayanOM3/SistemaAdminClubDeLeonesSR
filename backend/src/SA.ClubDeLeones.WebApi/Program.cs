@@ -4,11 +4,14 @@ using Microsoft.OpenApi.Models;
 using SA.ClubDeLeones.Infrastructure;
 using SA.ClubDeLeones.Infrastructure.Autenticacion;
 using SA.ClubDeLeones.WebApi.Middleware;
+using FluentValidation;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddValidatorsFromAssembly(typeof(SA.ClubDeLeones.Application.Mapeos.PerfilMapeos).Assembly);
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>

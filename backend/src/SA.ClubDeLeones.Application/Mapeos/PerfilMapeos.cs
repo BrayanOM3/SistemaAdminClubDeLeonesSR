@@ -69,7 +69,15 @@ public class PerfilMapeos : Profile
                 src.Tipo,
                 src.MontoRecaudado
             ));
-        CreateMap<CrearCampanaDto, Campana>();
+        CreateMap<CrearCampanaDto, Campana>()
+            .ConstructUsing(src => new Campana(
+                src.Nombre,
+                src.Descripcion,
+                src.FechaInicio,
+                src.Tipo,
+                src.FechaFin,
+                src.ObjetivoMonto
+            ));
         CreateMap<ActualizarCampanaDto, Campana>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.FechaCreacion, opt => opt.Ignore())
@@ -119,7 +127,16 @@ public class PerfilMapeos : Profile
                 src.Estado,
                 src.Usuario != null
             ));
-        CreateMap<CrearVoluntarioDto, Voluntario>();
+        CreateMap<CrearVoluntarioDto, Voluntario>()
+            .ConstructUsing(src => new Voluntario(
+                src.NombreCompleto,
+                src.Cedula,
+                src.FechaIngreso,
+                src.Telefono,
+                src.Correo,
+                src.Disponibilidad,
+                src.Especialidad
+            ));
         CreateMap<ActualizarVoluntarioDto, Voluntario>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.FechaCreacion, opt => opt.Ignore())
@@ -158,7 +175,15 @@ public class PerfilMapeos : Profile
                 src.CampanaId,
                 src.Campana != null ? src.Campana.Nombre : null
             ));
-        CreateMap<CrearActividadDto, Actividad>();
+        CreateMap<CrearActividadDto, Actividad>()
+            .ConstructUsing(src => new Actividad(
+                src.Nombre,
+                src.Descripcion,
+                src.Tipo,
+                DateTime.SpecifyKind(src.Fecha, DateTimeKind.Utc),
+                src.Lugar,
+                src.CampanaId
+            ));
         CreateMap<ActualizarActividadDto, Actividad>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.FechaCreacion, opt => opt.Ignore())

@@ -41,7 +41,7 @@ public class DonacionConfiguracion : IEntityTypeConfiguration<Donacion>
             .IsRequired();
 
         builder.Property(d => d.FechaActualizacion)
-            .IsRequired();
+            .IsRequired(false);
 
         // Relaciones
         builder.HasOne(d => d.Campana)
