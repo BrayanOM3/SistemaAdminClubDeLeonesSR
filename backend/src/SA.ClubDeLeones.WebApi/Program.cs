@@ -10,7 +10,11 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = null; // Use PascalCase
+    });
 builder.Services.AddValidatorsFromAssembly(typeof(SA.ClubDeLeones.Application.Mapeos.PerfilMapeos).Assembly);
 builder.Services.AddEndpointsApiExplorer();
 
