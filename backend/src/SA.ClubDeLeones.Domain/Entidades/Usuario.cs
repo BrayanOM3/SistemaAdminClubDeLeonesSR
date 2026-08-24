@@ -15,7 +15,7 @@ public class Usuario : EntidadBase
     // Relación
     public Voluntario? Voluntario { get; private set; }
 
-    private Usuario() { }
+    protected Usuario() { }
 
     public Usuario(
         string nombreUsuario,

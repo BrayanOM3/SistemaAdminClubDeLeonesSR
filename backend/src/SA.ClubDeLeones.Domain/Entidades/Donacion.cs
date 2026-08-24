@@ -18,7 +18,10 @@ public class Donacion : EntidadBase
     public Campana? Campana { get; private set; }
     public Voluntario? Voluntario { get; private set; }
 
-    private Donacion() { }
+    protected Donacion()
+    {
+        Fecha = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
+    }
 
     public Donacion(
         string donanteNombre,

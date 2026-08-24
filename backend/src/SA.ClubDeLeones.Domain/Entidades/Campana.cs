@@ -21,7 +21,7 @@ public class Campana : EntidadBase
     public ICollection<CampanaVoluntario> Voluntarios { get; private set; } = new List<CampanaVoluntario>();
     public ICollection<Actividad> Actividades { get; private set; } = new List<Actividad>();
 
-    private Campana() { }
+    protected Campana() { }
 
     public Campana(
         string nombre,

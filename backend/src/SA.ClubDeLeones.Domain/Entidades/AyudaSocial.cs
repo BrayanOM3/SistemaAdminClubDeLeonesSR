@@ -19,7 +19,10 @@ public class AyudaSocial : EntidadBase
     public Campana? Campana { get; private set; }
     public Voluntario? Voluntario { get; private set; }
 
-    private AyudaSocial() { }
+    protected AyudaSocial()
+    {
+        FechaEntrega = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
+    }
 
     public AyudaSocial(
         Guid beneficiarioId,

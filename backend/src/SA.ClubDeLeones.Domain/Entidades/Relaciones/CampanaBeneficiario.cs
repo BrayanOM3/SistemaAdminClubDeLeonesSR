@@ -13,7 +13,10 @@ public class CampanaBeneficiario : EntidadBase
     public Campana? Campana { get; private set; }
     public Beneficiario? Beneficiario { get; private set; }
 
-    private CampanaBeneficiario() { }
+    protected CampanaBeneficiario()
+    {
+        FechaAsignacion = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
+    }
 
     public CampanaBeneficiario(Guid campanaId, Guid beneficiarioId, string? observaciones = null)
     {

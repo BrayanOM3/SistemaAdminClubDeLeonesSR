@@ -14,7 +14,10 @@ public class ActividadBeneficiario : EntidadBase
     public Actividad? Actividad { get; private set; }
     public Beneficiario? Beneficiario { get; private set; }
 
-    private ActividadBeneficiario() { }
+    protected ActividadBeneficiario()
+    {
+        FechaAsistencia = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
+    }
 
     public ActividadBeneficiario(Guid actividadId, Guid beneficiarioId, bool asistio = true, string? observaciones = null)
     {

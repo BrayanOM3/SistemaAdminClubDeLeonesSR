@@ -23,7 +23,7 @@ public class Beneficiario : EntidadBase
     public ICollection<ActividadBeneficiario> Actividades { get; private set; } = new List<ActividadBeneficiario>();
 
     // Constructor para EF Core
-    private Beneficiario() { }
+    protected Beneficiario() { }
 
     public Beneficiario(
         string nombreCompleto,

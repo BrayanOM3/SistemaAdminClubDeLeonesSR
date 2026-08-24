@@ -18,7 +18,10 @@ public class Actividad : EntidadBase
     public ICollection<ActividadBeneficiario> Beneficiarios { get; private set; } = new List<ActividadBeneficiario>();
     public ICollection<ActividadVoluntario> Voluntarios { get; private set; } = new List<ActividadVoluntario>();
 
-    private Actividad() { }
+    protected Actividad()
+    {
+        Fecha = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
+    }
 
     public Actividad(
         string nombre,

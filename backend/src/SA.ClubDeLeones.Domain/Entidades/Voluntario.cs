@@ -22,7 +22,7 @@ public class Voluntario : EntidadBase
     public ICollection<CampanaVoluntario> Campanas { get; private set; } = new List<CampanaVoluntario>();
     public ICollection<ActividadVoluntario> Actividades { get; private set; } = new List<ActividadVoluntario>();
 
-    private Voluntario() { }
+    protected Voluntario() { }
 
     public Voluntario(
         string nombreCompleto,

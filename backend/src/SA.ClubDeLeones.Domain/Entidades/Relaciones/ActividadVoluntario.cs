@@ -13,7 +13,10 @@ public class ActividadVoluntario : EntidadBase
     public Actividad? Actividad { get; private set; }
     public Voluntario? Voluntario { get; private set; }
 
-    private ActividadVoluntario() { }
+    protected ActividadVoluntario()
+    {
+        FechaParticipacion = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
+    }
 
     public ActividadVoluntario(Guid actividadId, Guid voluntarioId, string? rolEnActividad = null)
     {
