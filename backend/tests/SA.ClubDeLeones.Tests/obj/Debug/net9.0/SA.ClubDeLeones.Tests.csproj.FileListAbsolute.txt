@@ -596,3 +596,5 @@ C:\Proyectos progra\SA_Club_De_Leones\backend\tests\SA.ClubDeLeones.Tests\obj\De
 C:\Proyectos progra\SA_Club_De_Leones\backend\tests\SA.ClubDeLeones.Tests\obj\Debug\net9.0\SA.ClubDeLeones.Tests.pdb
 C:\Proyectos progra\SA_Club_De_Leones\backend\tests\SA.ClubDeLeones.Tests\obj\Debug\net9.0\SA.ClubDeLeones.Tests.genruntimeconfig.cache
 C:\Proyectos progra\SA_Club_De_Leones\backend\tests\SA.ClubDeLeones.Tests\obj\Debug\net9.0\ref\SA.ClubDeLeones.Tests.dll
+C:\Proyectos progra\SA_Club_De_Leones\backend\tests\SA.ClubDeLeones.Tests\bin\Debug\net9.0\FluentValidation.AspNetCore.dll
+C:\Proyectos progra\SA_Club_De_Leones\backend\tests\SA.ClubDeLeones.Tests\bin\Debug\net9.0\FluentValidation.DependencyInjectionExtensions.dll

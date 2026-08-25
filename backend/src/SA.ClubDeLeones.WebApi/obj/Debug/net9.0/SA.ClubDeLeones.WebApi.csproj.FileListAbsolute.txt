@@ -206,3 +206,6 @@ C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.WebApi\obj\Deb
 C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.WebApi\obj\Debug\net9.0\SA.ClubDeLeones.WebApi.pdb
 C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.WebApi\obj\Debug\net9.0\SA.ClubDeLeones.WebApi.genruntimeconfig.cache
 C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.WebApi\obj\Debug\net9.0\ref\SA.ClubDeLeones.WebApi.dll
+C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.WebApi\bin\Debug\net9.0\FluentValidation.AspNetCore.dll
+C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.WebApi\bin\Debug\net9.0\FluentValidation.DependencyInjectionExtensions.dll
+C:\Proyectos progra\SA_Club_De_Leones\backend\src\SA.ClubDeLeones.WebApi\bin\Debug\net9.0\appsettings.Production.json

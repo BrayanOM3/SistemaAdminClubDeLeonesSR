@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SA.ClubDeLeones.WebApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d4945e88988b4f8c4e0b3b59b33a934b7aac0c4e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b3b4cad7502ada135c0b7cce6fa643f44e553c5d")]
 [assembly: System.Reflection.AssemblyProductAttribute("SA.ClubDeLeones.WebApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SA.ClubDeLeones.WebApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
