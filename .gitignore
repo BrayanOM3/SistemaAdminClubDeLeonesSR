@@ -1,0 +1,28 @@
+# Build artifacts
+bin/
+obj/
+
+# Logs
+*.log
+*.err
+
+# IDE
+.vs/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# NuGet
+packages/
+*.nupkg
+
+# Migration logs
+backend/migration.log
+
+# Environment files
+*.env.local
+*.env.*.local
