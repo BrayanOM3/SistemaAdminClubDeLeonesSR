@@ -1,4 +1,5 @@
-import { ReactNode } from 'react';
+import React from 'react';
+import type { ReactNode } from 'react';
 import {
   Box,
   AppBar,
@@ -7,7 +8,7 @@ import {
   IconButton,
   Drawer,
   List,
-  ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemText,
   Avatar,
@@ -28,14 +29,13 @@ import {
   Event,
   Assessment,
   Person,
-  ExitToApp,
   Settings,
   Logout,
   DarkMode,
   LightMode,
   Notifications,
 } from '@mui/icons-material';
-import { Link, useLocation, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useStoreSesion } from '../store/storeSesion';
 import { useStoreUI } from '../store/storeUi';
 
@@ -57,8 +57,7 @@ interface LayoutPrincipalProps {
 export function LayoutPrincipal({ children }: LayoutPrincipalProps) {
   const theme = useTheme();
   const esMovil = useMediaQuery(theme.breakpoints.down('md'));
-  const location = useLocation();
-  const { usuarioId, nombreUsuario, rol, nombreVoluntario, cerrarSesion } = useStoreSesion();
+  const { nombreUsuario, nombreVoluntario, cerrarSesion } = useStoreSesion();
   const { menuAbierto, abrirMenu, cerrarMenu, temaOscuro, alternarTema, notificaciones } = useStoreUI();
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
@@ -146,21 +145,23 @@ export function LayoutPrincipal({ children }: LayoutPrincipalProps) {
           <NavLink
             key={item.ruta}
             to={item.ruta}
-            style={({ isActive }) => ({
-              textDecoration: 'none',
-              color: isActive ? 'primary.main' : 'inherit',
-              backgroundColor: isActive ? 'primary.light' + '15' : 'transparent',
-              borderRadius: 2,
-              '&:hover': { backgroundColor: 'action.hover' },
-            })}
-          >
-            <ListItem button>
-              <ListItemIcon sx={{ minWidth: 40, color: ({ isActive }) => (isActive ? 'primary.main' : 'inherit') }}>
-                {item.icono}
-              </ListItemIcon>
-              <ListItemText primary={item.etiqueta} />
-            </ListItem>
-          </NavLink>
+            children={({ isActive }) => (
+              <ListItemButton
+                sx={{
+                  textDecoration: 'none',
+                  color: isActive ? 'primary.main' : 'inherit',
+                  backgroundColor: isActive ? 'primary.light' + '15' : 'transparent',
+                  borderRadius: 2,
+                  '&:hover': { backgroundColor: 'action.hover' },
+                }}
+              >
+                <ListItemIcon sx={{ minWidth: 40, color: isActive ? 'primary.main' : 'inherit' }}>
+                  {item.icono}
+                </ListItemIcon>
+                <ListItemText primary={item.etiqueta} />
+              </ListItemButton>
+            )}
+          />
         ))}
       </List>
       <Divider />
@@ -252,4 +253,3 @@ export function LayoutPrincipal({ children }: LayoutPrincipalProps) {
   );
 }
 
-import React from 'react';

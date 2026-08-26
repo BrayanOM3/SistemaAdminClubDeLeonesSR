@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Button, Chip, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress, Alert } from '@mui/material';
 import { Add, Edit, Delete, Visibility } from '@mui/icons-material';
 import { useVoluntarios, useCrearVoluntario, useActualizarVoluntario, useEliminarVoluntario } from '../../hooks/useVoluntarios';
@@ -51,18 +51,14 @@ export function PaginaVoluntarios() {
     },
   ];
 
-  const manejarCrear = async (dto: CrearVoluntarioDto) => {
-    await crear(dto);
-    agregarNotificacion({ tipo: 'exito', mensaje: 'Voluntario registrado correctamente' });
-    refetch();
-    setDialogoAbierto(false);
-    setEditando(null);
-  };
-
-  const manejarActualizar = async (dto: ActualizarVoluntarioDto) => {
-    if (!editando) return;
-    await actualizar({ id: editando.id, dto });
-    agregarNotificacion({ tipo: 'exito', mensaje: 'Voluntario actualizado correctamente' });
+  const manejarSubmit = async (dto: CrearVoluntarioDto | ActualizarVoluntarioDto) => {
+    if (editando) {
+      await actualizar({ id: editando.id, dto: dto as ActualizarVoluntarioDto });
+      agregarNotificacion({ tipo: 'exito', mensaje: 'Voluntario actualizado correctamente' });
+    } else {
+      await crear(dto as CrearVoluntarioDto);
+      agregarNotificacion({ tipo: 'exito', mensaje: 'Voluntario registrado correctamente' });
+    }
     refetch();
     setDialogoAbierto(false);
     setEditando(null);
@@ -109,14 +105,13 @@ export function PaginaVoluntarios() {
       <DialogoFormulario
         open={dialogoAbierto}
         onClose={() => { setDialogoAbierto(false); setEditando(null); }}
-        onSubmit={editando ? () => manejarActualizar({}) : () => manejarCrear({})}
         titulo={editando ? `Editar: ${editando.nombreCompleto}` : 'Nuevo voluntario'}
         ancho="lg"
         cargando={creando || actualizando}
       >
         <FormularioVoluntario
           inicial={editando || undefined}
-          onSubmit={editando ? manejarActualizar : manejarCrear}
+          onSubmit={manejarSubmit}
         />
       </DialogoFormulario>
 

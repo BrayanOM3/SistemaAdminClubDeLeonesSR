@@ -32,7 +32,4 @@ export interface ActualizarDonacionDto {
   voluntarioId?: string;
 }
 
-export enum TipoDonacion {
-  Monetaria = 'Monetaria',
-  EnEspecie = 'EnEspecie',
-}
+export type TipoDonacion = 'Monetaria' | 'EnEspecie';

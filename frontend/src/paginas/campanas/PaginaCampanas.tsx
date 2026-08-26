@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Button, Chip, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress, Alert } from '@mui/material';
 import { Add, Edit, Delete, Visibility } from '@mui/icons-material';
 import { useCampanas, useCrearCampana, useActualizarCampana, useEliminarCampana } from '../../hooks/useCampanas';
@@ -50,18 +50,14 @@ export function PaginaCampanas() {
     },
   ];
 
-  const manejarCrear = async (dto: CrearCampanaDto) => {
-    await crear(dto);
-    agregarNotificacion({ tipo: 'exito', mensaje: 'Campaña creada correctamente' });
-    refetch();
-    setDialogoAbierto(false);
-    setEditando(null);
-  };
-
-  const manejarActualizar = async (dto: ActualizarCampanaDto) => {
-    if (!editando) return;
-    await actualizar({ id: editando.id, dto });
-    agregarNotificacion({ tipo: 'exito', mensaje: 'Campaña actualizada correctamente' });
+  const manejarSubmit = async (dto: CrearCampanaDto | ActualizarCampanaDto) => {
+    if (editando) {
+      await actualizar({ id: editando.id, dto: dto as ActualizarCampanaDto });
+      agregarNotificacion({ tipo: 'exito', mensaje: 'Campaña actualizada correctamente' });
+    } else {
+      await crear(dto as CrearCampanaDto);
+      agregarNotificacion({ tipo: 'exito', mensaje: 'Campaña creada correctamente' });
+    }
     refetch();
     setDialogoAbierto(false);
     setEditando(null);
@@ -108,14 +104,13 @@ export function PaginaCampanas() {
       <DialogoFormulario
         open={dialogoAbierto}
         onClose={() => { setDialogoAbierto(false); setEditando(null); }}
-        onSubmit={editando ? () => manejarActualizar({}) : () => manejarCrear({})}
         titulo={editando ? `Editar: ${editando.nombre}` : 'Nueva campaña'}
         ancho="lg"
         cargando={creando || actualizando}
       >
         <FormularioCampana
           inicial={editando || undefined}
-          onSubmit={editando ? manejarActualizar : manejarCrear}
+          onSubmit={manejarSubmit}
         />
       </DialogoFormulario>
 

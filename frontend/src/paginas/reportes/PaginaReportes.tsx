@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Box, Button, Grid, Card, CardContent, Typography, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
-import { Download, PictureAsPdf, TableChart, Assessment } from '@mui/icons-material';
+import { Box, Button, Card, CardContent, Typography, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { PictureAsPdf, TableChart, Assessment } from '@mui/icons-material';
 import { useBeneficiarios } from '../../hooks/useBeneficiarios';
 import { useDonaciones } from '../../hooks/useDonaciones';
 import { useCampanas } from '../../hooks/useCampanas';
@@ -136,7 +136,7 @@ export function PaginaReportes() {
     if (!datosActuales.length) return;
     const headers = columnas.map((c) => c.label).join(',');
     const rows = datosActuales.map((fila) =>
-      columnas.map((c) => `"${String(formatearValor(fila as Record<string, unknown>, c.key)).replace(/"/g, '""')}"`).join(',')
+      columnas.map((c) => `"${String(formatearValor(fila as unknown as Record<string, unknown>, c.key)).replace(/"/g, '""')}"`).join(',')
     );
     const csv = [headers, ...rows].join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -164,7 +164,7 @@ export function PaginaReportes() {
         startY: 35,
         head: [columnas.map((c) => c.label)],
         body: datosActuales.map((fila) =>
-          columnas.map((c) => formatearValor(fila as Record<string, unknown>, c.key))
+          columnas.map((c) => formatearValor(fila as unknown as Record<string, unknown>, c.key))
         ),
         styles: { fontSize: 7, cellPadding: 2 },
         headStyles: { fillColor: [27, 94, 32] },
@@ -248,7 +248,7 @@ export function PaginaReportes() {
                     <tr key={index} style={{ backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#FAFAFA' }}>
                       {columnas.map((col) => (
                         <td key={col.key} style={{ padding: '8px 12px', borderBottom: '1px solid #F0F0F0' }}>
-                          {formatearValor(fila as Record<string, unknown>, col.key)}
+                          {formatearValor(fila as unknown as Record<string, unknown>, col.key)}
                         </td>
                       ))}
                     </tr>

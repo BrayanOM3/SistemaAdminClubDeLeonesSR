@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { Box, TextField, Grid, Controller } from '@mui/material';
-import { useForm, UseFormReturn } from 'react-hook-form';
+import { Box, TextField, Grid, Typography } from '@mui/material';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import type { CrearBeneficiarioDto, ActualizarBeneficiarioDto, BeneficiarioDto } from '../../tipos/beneficiario';
@@ -25,7 +25,6 @@ interface FormularioBeneficiarioProps {
 }
 
 export function FormularioBeneficiario({ inicial, onSubmit }: FormularioBeneficiarioProps) {
-  const esEdicion = !!inicial;
 
   const valoresIniciales: FormularioBeneficiarioData = {
     nombreCompleto: inicial?.nombreCompleto || '',
@@ -71,11 +70,11 @@ export function FormularioBeneficiario({ inicial, onSubmit }: FormularioBenefici
   return (
     <form onSubmit={form.handleSubmit(manejarSubmit)} noValidate>
       <Box component="fieldset" sx={{ mb: 2 }}>
-        <legend sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
+        <Typography variant="body2" sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
           Información personal
-        </legend>
+        </Typography>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="nombreCompleto"
               control={form.control}
@@ -91,7 +90,7 @@ export function FormularioBeneficiario({ inicial, onSubmit }: FormularioBenefici
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="cedula"
               control={form.control}
@@ -107,7 +106,7 @@ export function FormularioBeneficiario({ inicial, onSubmit }: FormularioBenefici
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="fechaNacimiento"
               control={form.control}
@@ -119,12 +118,14 @@ export function FormularioBeneficiario({ inicial, onSubmit }: FormularioBenefici
                   {...field}
                   error={!!form.formState.errors.fechaNacimiento}
                   helperText={form.formState.errors.fechaNacimiento?.message}
-                  InputLabelProps={{ shrink: true }}
+                  slotProps={{
+                    inputLabel: { shrink: true },
+                  }}
                 />
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="telefono"
               control={form.control}
@@ -139,7 +140,7 @@ export function FormularioBeneficiario({ inicial, onSubmit }: FormularioBenefici
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="correo"
               control={form.control}
@@ -154,7 +155,7 @@ export function FormularioBeneficiario({ inicial, onSubmit }: FormularioBenefici
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="estadoCivil"
               control={form.control}
@@ -167,7 +168,11 @@ export function FormularioBeneficiario({ inicial, onSubmit }: FormularioBenefici
                   {...field}
                   error={!!form.formState.errors.estadoCivil}
                   helperText={form.formState.errors.estadoCivil?.message}
-                  SelectProps={{ native: true }}
+                  slotProps={{
+                    select: {
+                      native: true,
+                    },
+                  }}
                 >
                   {opcionesEstadoCivil.map((opcion) => (
                     <option key={opcion} value={opcion}>{opcion}</option>
@@ -180,11 +185,11 @@ export function FormularioBeneficiario({ inicial, onSubmit }: FormularioBenefici
       </Box>
 
       <Box component="fieldset" sx={{ mb: 2 }}>
-        <legend sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
+        <Typography variant="body2" sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
           Domicilio y situación
-        </legend>
+        </Typography>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <Controller
               name="direccion"
               control={form.control}
@@ -202,7 +207,7 @@ export function FormularioBeneficiario({ inicial, onSubmit }: FormularioBenefici
               )}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <Controller
               name="situacionNecesidad"
               control={form.control}
@@ -224,9 +229,9 @@ export function FormularioBeneficiario({ inicial, onSubmit }: FormularioBenefici
       </Box>
 
       <Box component="fieldset">
-        <legend sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
+        <Typography variant="body2" sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
           Observaciones
-        </legend>
+        </Typography>
         <Controller
           name="observaciones"
           control={form.control}

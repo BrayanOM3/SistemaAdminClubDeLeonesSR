@@ -38,15 +38,6 @@ export interface ActualizarBeneficiarioDto {
   observaciones?: string;
 }
 
-export enum EstadoBeneficiario {
-  Activo = 'Activo',
-  Inactivo = 'Inactivo',
-}
+export type EstadoBeneficiario = 'Activo' | 'Inactivo';
 
-export enum EstadoCivil {
-  Soltero = 'Soltero',
-  Casado = 'Casado',
-  Viudo = 'Viudo',
-  Divorciado = 'Divorciado',
-  Otro = 'Otro',
-}
+export type EstadoCivil = 'Soltero' | 'Casado' | 'Viudo' | 'Divorciado' | 'Otro';

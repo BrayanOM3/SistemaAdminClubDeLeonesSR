@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { Box, TextField, Grid, Controller } from '@mui/material';
-import { useForm } from 'react-hook-form';
+import { Box, TextField, Grid, Typography } from '@mui/material';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import type { CrearVoluntarioDto, ActualizarVoluntarioDto, VoluntarioDto } from '../../tipos/voluntario';
@@ -66,11 +66,11 @@ export function FormularioVoluntario({ inicial, onSubmit }: FormularioVoluntario
   return (
     <form onSubmit={form.handleSubmit(manejarSubmit)} noValidate>
       <Box component="fieldset" sx={{ mb: 2 }}>
-        <legend sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
+        <Typography variant="body2" sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
           Información personal
-        </legend>
+        </Typography>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="nombreCompleto"
               control={form.control}
@@ -86,7 +86,7 @@ export function FormularioVoluntario({ inicial, onSubmit }: FormularioVoluntario
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="cedula"
               control={form.control}
@@ -102,7 +102,7 @@ export function FormularioVoluntario({ inicial, onSubmit }: FormularioVoluntario
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="telefono"
               control={form.control}
@@ -117,7 +117,7 @@ export function FormularioVoluntario({ inicial, onSubmit }: FormularioVoluntario
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="correo"
               control={form.control}
@@ -132,7 +132,7 @@ export function FormularioVoluntario({ inicial, onSubmit }: FormularioVoluntario
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="fechaIngreso"
               control={form.control}
@@ -145,12 +145,11 @@ export function FormularioVoluntario({ inicial, onSubmit }: FormularioVoluntario
                   {...field}
                   error={!!form.formState.errors.fechaIngreso}
                   helperText={form.formState.errors.fechaIngreso?.message}
-                  InputLabelProps={{ shrink: true }}
                 />
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="estado"
               control={form.control}
@@ -163,7 +162,11 @@ export function FormularioVoluntario({ inicial, onSubmit }: FormularioVoluntario
                   {...field}
                   error={!!form.formState.errors.estado}
                   helperText={form.formState.errors.estado?.message}
-                  SelectProps={{ native: true }}
+                  slotProps={{
+                    select: {
+                      native: true,
+                    },
+                  }}
                 >
                   {opcionesEstado.map((opcion) => (
                     <option key={opcion} value={opcion}>{opcion}</option>
@@ -176,11 +179,11 @@ export function FormularioVoluntario({ inicial, onSubmit }: FormularioVoluntario
       </Box>
 
       <Box component="fieldset" sx={{ mb: 2 }}>
-        <legend sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
+        <Typography variant="body2" sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
           Información adicional
-        </legend>
+        </Typography>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="disponibilidad"
               control={form.control}
@@ -196,7 +199,7 @@ export function FormularioVoluntario({ inicial, onSubmit }: FormularioVoluntario
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="especialidad"
               control={form.control}

@@ -34,7 +34,4 @@ export interface ActualizarVoluntarioDto {
   estado?: EstadoVoluntario;
 }
 
-export enum EstadoVoluntario {
-  Activo = 'Activo',
-  Inactivo = 'Inactivo',
-}
+export type EstadoVoluntario = 'Activo' | 'Inactivo';

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { actividadServicio } from '../servicios/actividadServicio';
-import type { CrearActividadDto, ActualizarActividadDto, ActividadDto } from '../tipos/actividad';
+import type { CrearActividadDto, ActualizarActividadDto } from '../tipos/actividad';
 
 export const useActividades = () => {
   return useQuery({

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -12,21 +12,13 @@ import {
 interface DialogoFormularioProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: () => Promise<void>;
+  onSubmit?: () => Promise<void>;
   titulo: string;
   children: ReactNode;
   cargando?: boolean;
   ancho?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
   deshabilitarCerrar?: boolean;
 }
-
-const anchos = {
-  sm: 500,
-  md: 600,
-  lg: 800,
-  xl: 1000,
-  full: '95vw',
-} as const;
 
 export function DialogoFormulario({
   open,

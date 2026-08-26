@@ -1,11 +1,7 @@
-import { ReactNode } from 'react';
+import { Outlet } from 'react-router-dom';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 
-interface LayoutAutenticacionProps {
-  children: ReactNode;
-}
-
-export function LayoutAutenticacion({ children }: LayoutAutenticacionProps) {
+export function LayoutAutenticacion() {
   return (
     <Box
       sx={{
@@ -27,7 +23,7 @@ export function LayoutAutenticacion({ children }: LayoutAutenticacionProps) {
               San Ramón
             </Typography>
           </Box>
-          {children}
+          <Outlet />
         </CardContent>
       </Card>
     </Box>

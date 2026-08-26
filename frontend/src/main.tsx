@@ -1,7 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { tema, temaOscuro } from './tema/tema';
 import { useStoreUI } from './store/storeUi';
@@ -27,9 +26,7 @@ function AppWrapper() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <RouterProvider router={router} />
-        </BrowserRouter>
+        <RouterProvider router={router} />
       </QueryClientProvider>
     </ThemeProvider>
   );

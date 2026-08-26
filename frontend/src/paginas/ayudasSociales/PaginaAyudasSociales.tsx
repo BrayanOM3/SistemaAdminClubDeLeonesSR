@@ -52,18 +52,14 @@ export function PaginaAyudasSociales() {
     },
   ];
 
-  const manejarCrear = async (dto: CrearAyudaSocialDto) => {
-    await crear(dto);
-    agregarNotificacion({ tipo: 'exito', mensaje: 'Ayuda social registrada correctamente' });
-    refetch();
-    setDialogoAbierto(false);
-    setEditando(null);
-  };
-
-  const manejarActualizar = async (dto: ActualizarAyudaSocialDto) => {
-    if (!editando) return;
-    await actualizar({ id: editando.id, dto });
-    agregarNotificacion({ tipo: 'exito', mensaje: 'Ayuda social actualizada correctamente' });
+  const manejarSubmit = async (dto: CrearAyudaSocialDto | ActualizarAyudaSocialDto) => {
+    if (editando) {
+      await actualizar({ id: editando.id, dto: dto as ActualizarAyudaSocialDto });
+      agregarNotificacion({ tipo: 'exito', mensaje: 'Ayuda social actualizada correctamente' });
+    } else {
+      await crear(dto as CrearAyudaSocialDto);
+      agregarNotificacion({ tipo: 'exito', mensaje: 'Ayuda social registrada correctamente' });
+    }
     refetch();
     setDialogoAbierto(false);
     setEditando(null);
@@ -110,14 +106,13 @@ export function PaginaAyudasSociales() {
       <DialogoFormulario
         open={dialogoAbierto}
         onClose={() => { setDialogoAbierto(false); setEditando(null); }}
-        onSubmit={editando ? () => manejarActualizar({}) : () => manejarCrear({})}
         titulo={editando ? `Editar ayuda #${editando.id.substring(0, 8)}` : 'Nueva ayuda social'}
         ancho="lg"
         cargando={creando || actualizando}
       >
         <FormularioAyudaSocial
           inicial={editando || undefined}
-          onSubmit={editando ? manejarActualizar : manejarCrear}
+          onSubmit={manejarSubmit}
         />
       </DialogoFormulario>
 

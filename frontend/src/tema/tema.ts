@@ -56,8 +56,8 @@ export const tema = createTheme({
           borderRadius: 8,
           padding: '8px 16px',
         },
-        containedPrimary: {
-          '&:hover': { backgroundColor: '#003300' },
+        contained: {
+          '&.MuiButton-containedPrimary:hover': { backgroundColor: '#003300' },
         },
       },
     },

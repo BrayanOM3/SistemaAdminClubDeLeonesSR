@@ -1,11 +1,13 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useStoreSesion } from '../store/storeSesion';
+import type { ReactNode } from 'react';
 
 interface RutaProtegidaProps {
   rolesPermitidos?: string[];
+  children?: ReactNode;
 }
 
-export function RutaProtegida({ rolesPermitidos }: RutaProtegidaProps) {
+export function RutaProtegida({ rolesPermitidos, children }: RutaProtegidaProps) {
   const { estaAutenticado, rol } = useStoreSesion();
   const location = useLocation();
 
@@ -17,5 +19,5 @@ export function RutaProtegida({ rolesPermitidos }: RutaProtegidaProps) {
     return <Navigate to="/inicio" replace />;
   }
 
-  return <Outlet />;
+  return children ?? <Outlet />;
 }

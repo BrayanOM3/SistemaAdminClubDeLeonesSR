@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { Box, TextField, Grid, Controller } from '@mui/material';
-import { useForm } from 'react-hook-form';
+import { Box, TextField, Grid } from '@mui/material';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import type { CrearActividadDto, ActualizarActividadDto, ActividadDto } from '../../tipos/actividad';
+import type { CrearActividadDto, ActualizarActividadDto, ActividadDto, TipoActividad } from '../../tipos/actividad';
 
 const esquemaActividad = z.object({
   nombre: z.string().min(2, 'Mínimo 2 caracteres').max(100),
@@ -47,7 +47,7 @@ export function FormularioActividad({ inicial, onSubmit }: FormularioActividadPr
     const dto: CrearActividadDto | ActualizarActividadDto = {
       nombre: data.nombre,
       descripcion: data.descripcion,
-      tipo: data.tipo,
+      tipo: data.tipo as TipoActividad,
       fecha: data.fecha,
       lugar: data.lugar || undefined,
       campanaId: data.campanaId || undefined,
@@ -55,16 +55,16 @@ export function FormularioActividad({ inicial, onSubmit }: FormularioActividadPr
     await onSubmit(dto);
   };
 
-  const opcionesTipo = ['Reunion', 'Evento', 'Jornada', 'Visita'] as const;
+  const opcionesTipo: TipoActividad[] = ['Reunion', 'Evento', 'Jornada', 'Visita'];
 
   return (
     <form onSubmit={form.handleSubmit(manejarSubmit)} noValidate>
       <Box component="fieldset" sx={{ mb: 2 }}>
-        <legend sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
+        <Box sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
           Información de la actividad
-        </legend>
+        </Box>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <Controller
               name="nombre"
               control={form.control}
@@ -80,7 +80,7 @@ export function FormularioActividad({ inicial, onSubmit }: FormularioActividadPr
               )}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12 }}>
             <Controller
               name="descripcion"
               control={form.control}
@@ -98,7 +98,7 @@ export function FormularioActividad({ inicial, onSubmit }: FormularioActividadPr
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="tipo"
               control={form.control}
@@ -111,7 +111,11 @@ export function FormularioActividad({ inicial, onSubmit }: FormularioActividadPr
                   {...field}
                   error={!!form.formState.errors.tipo}
                   helperText={form.formState.errors.tipo?.message}
-                  SelectProps={{ native: true }}
+                  slotProps={{
+                    select: {
+                      native: true,
+                    },
+                  }}
                 >
                   {opcionesTipo.map((opcion) => (
                     <option key={opcion} value={opcion}>{opcion}</option>
@@ -120,7 +124,7 @@ export function FormularioActividad({ inicial, onSubmit }: FormularioActividadPr
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="fecha"
               control={form.control}
@@ -133,12 +137,14 @@ export function FormularioActividad({ inicial, onSubmit }: FormularioActividadPr
                   {...field}
                   error={!!form.formState.errors.fecha}
                   helperText={form.formState.errors.fecha?.message}
-                  InputLabelProps={{ shrink: true }}
+                  slotProps={{
+                    inputLabel: { shrink: true },
+                  }}
                 />
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="lugar"
               control={form.control}
@@ -153,7 +159,7 @@ export function FormularioActividad({ inicial, onSubmit }: FormularioActividadPr
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="campanaId"
               control={form.control}

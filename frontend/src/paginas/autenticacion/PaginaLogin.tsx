@@ -11,9 +11,8 @@ import {
   IconButton,
   FormControlLabel,
   Checkbox,
-  Link as MuiLink,
 } from '@mui/material';
-import { Visibility, VisibilityOff, Lock } from '@mui/icons-material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { esquemaIniciarSesion, type IniciarSesionFormData } from '../../esquemas/autenticacion';
@@ -69,7 +68,7 @@ export function PaginaLogin() {
       <Typography variant="h5" gutterBottom>
         Iniciar sesión
       </Typography>
-      <Typography variant="body2" color="text.secondary" paragraph>
+      <Typography variant="body2" color="text.secondary">
         Ingresa tus credenciales para acceder al sistema
       </Typography>
 
@@ -100,19 +99,21 @@ export function PaginaLogin() {
           helperText={errors.password?.message}
           margin="normal"
           autoComplete="current-password"
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  type="button"
-                  onClick={() => setMostrarPassword(!mostrarPassword)}
-                  edge="end"
-                  aria-label={mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                >
-                  {mostrarPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    type="button"
+                    onClick={() => setMostrarPassword(!mostrarPassword)}
+                    edge="end"
+                    aria-label={mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  >
+                    {mostrarPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            },
           }}
         />
 

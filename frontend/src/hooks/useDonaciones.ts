@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { donacionServicio } from '../servicios/donacionServicio';
-import type { CrearDonacionDto, ActualizarDonacionDto, DonacionDto } from '../tipos/donacion';
+import type { CrearDonacionDto, ActualizarDonacionDto } from '../tipos/donacion';
 
 export const useDonaciones = () => {
   return useQuery({

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { campanaServicio } from '../servicios/campanaServicio';
-import type { CrearCampanaDto, ActualizarCampanaDto, CampanaDto } from '../tipos/campana';
+import type { CrearCampanaDto, ActualizarCampanaDto } from '../tipos/campana';
 
 export const useCampanas = () => {
   return useQuery({

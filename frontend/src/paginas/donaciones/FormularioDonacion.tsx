@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { Box, TextField, Grid, Controller } from '@mui/material';
-import { useForm } from 'react-hook-form';
+import { Box, TextField, Grid, Typography } from '@mui/material';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import type { CrearDonacionDto, ActualizarDonacionDto, DonacionDto } from '../../tipos/donacion';
@@ -24,7 +24,6 @@ interface FormularioDonacionProps {
 }
 
 export function FormularioDonacion({ inicial, onSubmit }: FormularioDonacionProps) {
-  const esEdicion = !!inicial;
 
   const valoresIniciales: FormularioDonacionData = {
     donanteNombre: inicial?.donanteNombre || '',
@@ -68,11 +67,11 @@ export function FormularioDonacion({ inicial, onSubmit }: FormularioDonacionProp
   return (
     <form onSubmit={form.handleSubmit(manejarSubmit)} noValidate>
       <Box component="fieldset" sx={{ mb: 2 }}>
-        <legend sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
+        <Typography variant="body2" sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
           Información de la donación
-        </legend>
+        </Typography>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="donanteNombre"
               control={form.control}
@@ -88,7 +87,7 @@ export function FormularioDonacion({ inicial, onSubmit }: FormularioDonacionProp
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="tipo"
               control={form.control}
@@ -101,7 +100,11 @@ export function FormularioDonacion({ inicial, onSubmit }: FormularioDonacionProp
                   {...field}
                   error={!!form.formState.errors.tipo}
                   helperText={form.formState.errors.tipo?.message}
-                  SelectProps={{ native: true }}
+                  slotProps={{
+                    select: {
+                      native: true,
+                    },
+                  }}
                 >
                   <option value="Monetaria">Monetaria</option>
                   <option value="EnEspecie">En especie</option>
@@ -110,7 +113,7 @@ export function FormularioDonacion({ inicial, onSubmit }: FormularioDonacionProp
             />
           </Grid>
           {esMonetaria && (
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Controller
                 name="monto"
                 control={form.control}
@@ -120,10 +123,10 @@ export function FormularioDonacion({ inicial, onSubmit }: FormularioDonacionProp
                     fullWidth
                     label="Monto (CRC) *"
                     type="number"
-                    step="0.01"
-                    min="0.01"
+                    slotProps={{
+                      htmlInput: { step: '0.01', min: '0.01' },
+                    }}
                     {...field}
-                    valueAsNumber
                     error={!!form.formState.errors.monto}
                     helperText={form.formState.errors.monto?.message}
                   />
@@ -131,7 +134,7 @@ export function FormularioDonacion({ inicial, onSubmit }: FormularioDonacionProp
               />
             </Grid>
           )}
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="fecha"
               control={form.control}
@@ -144,12 +147,14 @@ export function FormularioDonacion({ inicial, onSubmit }: FormularioDonacionProp
                   {...field}
                   error={!!form.formState.errors.fecha}
                   helperText={form.formState.errors.fecha?.message}
-                  InputLabelProps={{ shrink: true }}
+                  slotProps={{
+                    inputLabel: { shrink: true },
+                  }}
                 />
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="reciboNumero"
               control={form.control}
@@ -164,7 +169,7 @@ export function FormularioDonacion({ inicial, onSubmit }: FormularioDonacionProp
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="campanaId"
               control={form.control}
@@ -180,7 +185,7 @@ export function FormularioDonacion({ inicial, onSubmit }: FormularioDonacionProp
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="voluntarioId"
               control={form.control}
@@ -201,9 +206,9 @@ export function FormularioDonacion({ inicial, onSubmit }: FormularioDonacionProp
 
       {!esMonetaria && (
         <Box component="fieldset" sx={{ mb: 2 }}>
-          <legend sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
+          <Typography variant="body2" sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
             Detalle (donación en especie)
-          </legend>
+          </Typography>
           <Controller
             name="descripcion"
             control={form.control}

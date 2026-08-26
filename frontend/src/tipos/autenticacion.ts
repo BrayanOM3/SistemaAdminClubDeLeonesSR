@@ -8,20 +8,11 @@ export interface IniciarSesionRespuestaDto {
   usuarioId: string;
   nombreUsuario: string;
   correo: string;
-  rol: RolUsuario;
+  rol: RolUsuario | number;
   voluntarioId?: string;
   nombreVoluntario?: string;
 }
 
-export enum RolUsuario {
-  Administrador = 'Administrador',
-  Tesorero = 'Tesorero',
-  Secretario = 'Secretario',
-  Director = 'Director',
-  Coordinador = 'Coordinador',
-}
+export type RolUsuario = 'Administrador' | 'Tesorero' | 'Secretario' | 'Director' | 'Coordinador';
 
-export enum EstadoUsuario {
-  Activo = 'Activo',
-  Inactivo = 'Inactivo',
-}
+export type EstadoUsuario = 'Activo' | 'Inactivo';

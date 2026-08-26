@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { voluntarioServicio } from '../servicios/voluntarioServicio';
-import type { CrearVoluntarioDto, ActualizarVoluntarioDto, VoluntarioDto } from '../tipos/voluntario';
+import type { CrearVoluntarioDto, ActualizarVoluntarioDto } from '../tipos/voluntario';
 
 export const useVoluntarios = () => {
   return useQuery({

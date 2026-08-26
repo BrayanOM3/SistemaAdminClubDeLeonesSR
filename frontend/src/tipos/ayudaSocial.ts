@@ -32,18 +32,6 @@ export interface ActualizarAyudaSocialDto {
   estado?: EstadoAyuda;
 }
 
-export enum TipoAyuda {
-  Alimentos = 'Alimentos',
-  Medicamentos = 'Medicamentos',
-  Educacion = 'Educacion',
-  Vivienda = 'Vivienda',
-  Vestimenta = 'Vestimenta',
-  Economica = 'Economica',
-  Otro = 'Otro',
-}
+export type TipoAyuda = 'Alimentos' | 'Medicamentos' | 'Educacion' | 'Vivienda' | 'Vestimenta' | 'Economica' | 'Otro';
 
-export enum EstadoAyuda {
-  Entregada = 'Entregada',
-  Pendiente = 'Pendiente',
-  Cancelada = 'Cancelada',
-}
+export type EstadoAyuda = 'Entregada' | 'Pendiente' | 'Cancelada';

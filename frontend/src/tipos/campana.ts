@@ -31,16 +31,6 @@ export interface ActualizarCampanaDto {
   tipo?: TipoCampana;
 }
 
-export enum EstadoCampana {
-  Planificada = 'Planificada',
-  Activa = 'Activa',
-  Finalizada = 'Finalizada',
-  Cancelada = 'Cancelada',
-}
+export type EstadoCampana = 'Planificada' | 'Activa' | 'Finalizada' | 'Cancelada';
 
-export enum TipoCampana {
-  Recaudacion = 'Recaudacion',
-  EnEspecie = 'EnEspecie',
-  Voluntariado = 'Voluntariado',
-  Mixta = 'Mixta',
-}
+export type TipoCampana = 'Recaudacion' | 'EnEspecie' | 'Voluntariado' | 'Mixta';

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Button, Chip, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress, Alert } from '@mui/material';
 import { Add, Edit, Delete, Visibility } from '@mui/icons-material';
 import { useBeneficiarios, useCrearBeneficiario, useActualizarBeneficiario, useEliminarBeneficiario } from '../../hooks/useBeneficiarios';
@@ -51,18 +51,14 @@ export function PaginaBeneficiarios() {
     },
   ];
 
-  const manejarCrear = async (dto: CrearBeneficiarioDto) => {
-    await crear(dto);
-    agregarNotificacion({ tipo: 'exito', mensaje: 'Beneficiario creado correctamente' });
-    refetch();
-    setDialogoAbierto(false);
-    setEditando(null);
-  };
-
-  const manejarActualizar = async (dto: ActualizarBeneficiarioDto) => {
-    if (!editando) return;
-    await actualizar({ id: editando.id, dto });
-    agregarNotificacion({ tipo: 'exito', mensaje: 'Beneficiario actualizado correctamente' });
+  const manejarSubmit = async (dto: CrearBeneficiarioDto | ActualizarBeneficiarioDto) => {
+    if (editando) {
+      await actualizar({ id: editando.id, dto: dto as ActualizarBeneficiarioDto });
+      agregarNotificacion({ tipo: 'exito', mensaje: 'Beneficiario actualizado correctamente' });
+    } else {
+      await crear(dto as CrearBeneficiarioDto);
+      agregarNotificacion({ tipo: 'exito', mensaje: 'Beneficiario creado correctamente' });
+    }
     refetch();
     setDialogoAbierto(false);
     setEditando(null);
@@ -109,14 +105,13 @@ export function PaginaBeneficiarios() {
       <DialogoFormulario
         open={dialogoAbierto}
         onClose={() => { setDialogoAbierto(false); setEditando(null); }}
-        onSubmit={editando ? () => manejarActualizar({}) : () => manejarCrear({})}
         titulo={editando ? `Editar: ${editando.nombreCompleto}` : 'Nuevo beneficiario'}
         ancho="lg"
         cargando={creando || actualizando}
       >
         <FormularioBeneficiario
           inicial={editando || undefined}
-          onSubmit={editando ? manejarActualizar : manejarCrear}
+          onSubmit={manejarSubmit}
         />
       </DialogoFormulario>
 

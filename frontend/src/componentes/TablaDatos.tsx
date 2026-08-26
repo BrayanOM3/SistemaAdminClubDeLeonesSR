@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import {
   Table,
   TableBody,
@@ -16,7 +16,7 @@ import {
   Typography,
   InputBase,
 } from '@mui/material';
-import { Edit, Delete, Visibility, Search, ContentCopy } from '@mui/icons-material';
+import { Search } from '@mui/icons-material';
 import { useState, useMemo } from 'react';
 import { formatoFechaCorta, formatoMoneda } from '../utilidades/formateadores';
 
@@ -51,7 +51,7 @@ interface TablaDatosProps<T> {
   onRowClick?: (fila: T) => void;
 }
 
-export function TablaDatos<T extends Record<string, unknown>>({
+export function TablaDatos<T>({
   datos,
   columnas,
   acciones,
@@ -75,7 +75,7 @@ export function TablaDatos<T extends Record<string, unknown>>({
     if (busqueda.trim()) {
       const termino = busqueda.toLowerCase().trim();
       resultado = resultado.filter((fila) =>
-        Object.values(fila).some(
+        Object.values(fila as Record<string, unknown>).some(
           (valor) => valor?.toString().toLowerCase().includes(termino)
         )
       );
@@ -83,10 +83,15 @@ export function TablaDatos<T extends Record<string, unknown>>({
 
     if (orden.campo) {
       resultado.sort((a, b) => {
-        const valorA = a[orden.campo];
-        const valorB = b[orden.campo];
+        const filaA = a as Record<string, unknown>;
+        const filaB = b as Record<string, unknown>;
+        const valorA = filaA[orden.campo];
+        const valorB = filaB[orden.campo];
         if (valorA === valorB) return 0;
-        const comparacion = valorA > valorB ? 1 : -1;
+        // Convert to string for comparison since values could be various types
+        const strA = String(valorA ?? '');
+        const strB = String(valorB ?? '');
+        const comparacion = strA.localeCompare(strB);
         return orden.direccion === 'asc' ? comparacion : -comparacion;
       });
     }
@@ -236,7 +241,7 @@ export function TablaDatos<T extends Record<string, unknown>>({
           onPageChange={manejarCambioPagina}
           onRowsPerPageChange={manejarCambioFilasPorPagina}
           labelRowsPerPage="Filas por página:"
-          labelDisplayedRows={(from, to, count) => `${from}–${to} de ${count}`}
+          labelDisplayedRows={({ from, to, count }) => `${from}–${to} de ${count}`}
         />
       )}
     </Paper>
@@ -259,18 +264,18 @@ export const formateadores = {
       Pendiente: { color: 'warning', label: 'Pendiente' },
       Monetaria: { color: 'info', label: 'Monetaria' },
       EnEspecie: { color: 'default', label: 'En especie' },
-      Recaudacion: { color: 'primary', label: 'Recaudación' },
+      Recaudacion: { color: 'info', label: 'Recaudación' },
       EnEspecieCampana: { color: 'default', label: 'En especie' },
-      Voluntariado: { color: 'secondary', label: 'Voluntariado' },
+      Voluntariado: { color: 'info', label: 'Voluntariado' },
       Mixta: { color: 'info', label: 'Mixta' },
       Reunion: { color: 'info', label: 'Reunión' },
-      Evento: { color: 'primary', label: 'Evento' },
-      Jornada: { color: 'secondary', label: 'Jornada' },
+      Evento: { color: 'info', label: 'Evento' },
+      Jornada: { color: 'info', label: 'Jornada' },
       Visita: { color: 'default', label: 'Visita' },
       Alimentos: { color: 'warning', label: 'Alimentos' },
       Medicamentos: { color: 'error', label: 'Medicamentos' },
       Educacion: { color: 'info', label: 'Educación' },
-      Vivienda: { color: 'secondary', label: 'Vivienda' },
+      Vivienda: { color: 'default', label: 'Vivienda' },
       Vestimenta: { color: 'default', label: 'Vestimenta' },
       Economica: { color: 'success', label: 'Económica' },
       Otro: { color: 'default', label: 'Otro' },

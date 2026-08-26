@@ -122,7 +122,7 @@ export function PaginaInicio() {
 
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {tarjetasResumen.map((tarjeta, index) => (
-          <Grid item xs={12} sm={6} lg={4} xl={2} key={tarjeta.titulo}>
+          <Grid size={{ xs: 12, sm: 6, lg: 4, xl: 2 }} key={tarjeta.titulo}>
             <TarjetaResumen
               titulo={tarjeta.titulo}
               icono={tarjeta.icono}
@@ -135,7 +135,7 @@ export function PaginaInicio() {
       </Grid>
 
       <Grid container spacing={3}>
-        <Grid item xs={12} lg={6}>
+        <Grid size={{ xs: 12, lg: 6 }}>
           <Card sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
@@ -164,7 +164,7 @@ export function PaginaInicio() {
           </Card>
         </Grid>
 
-        <Grid item xs={12} lg={6}>
+        <Grid size={{ xs: 12, lg: 6 }}>
           <Card sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>

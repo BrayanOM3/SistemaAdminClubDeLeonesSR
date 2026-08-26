@@ -28,9 +28,4 @@ export interface ActualizarActividadDto {
   campanaId?: string;
 }
 
-export enum TipoActividad {
-  Reunion = 'Reunion',
-  Evento = 'Evento',
-  Jornada = 'Jornada',
-  Visita = 'Visita',
-}
+export type TipoActividad = 'Reunion' | 'Evento' | 'Jornada' | 'Visita';

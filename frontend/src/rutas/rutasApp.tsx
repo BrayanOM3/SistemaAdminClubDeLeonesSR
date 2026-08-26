@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
 import { LayoutPrincipal } from '../layouts/LayoutPrincipal';
 import { LayoutAutenticacion } from '../layouts/LayoutAutenticacion';
 import { RutaProtegida } from './RutaProtegida';
@@ -12,6 +12,16 @@ import { PaginaAyudasSociales } from '../paginas/ayudasSociales/PaginaAyudasSoci
 import { PaginaActividades } from '../paginas/actividades/PaginaActividades';
 import { PaginaReportes } from '../paginas/reportes/PaginaReportes';
 
+function LayoutProtegido() {
+  return (
+    <RutaProtegida>
+      <LayoutPrincipal>
+        <Outlet />
+      </LayoutPrincipal>
+    </RutaProtegida>
+  );
+}
+
 export const router = createBrowserRouter([
   {
     path: '/login',
@@ -21,7 +31,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <LayoutPrincipal />,
+    element: <LayoutProtegido />,
     children: [
       { path: '/inicio', element: <PaginaInicio /> },
       { path: '/beneficiarios', element: <PaginaBeneficiarios /> },
@@ -35,5 +45,3 @@ export const router = createBrowserRouter([
   },
   { path: '*', element: <Navigate to="/inicio" replace /> },
 ]);
-
-import { Navigate } from 'react-router-dom';

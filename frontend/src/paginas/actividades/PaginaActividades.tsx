@@ -23,7 +23,7 @@ export function PaginaActividades() {
   const columnas = [
     { campo: 'nombre', encabezado: 'Nombre', ordenable: true },
     { campo: 'tipo', encabezado: 'Tipo', ordenable: true, formatear: formateadores.estado },
-    { campo: 'fecha', encabezado: 'Fecha', ordenable: true, formatear: formateadores.fechaHora },
+    { campo: 'fecha', encabezado: 'Fecha', ordenable: true, formatear: formateadores.fecha },
     { campo: 'lugar', encabezado: 'Lugar', ordenable: false },
     { campo: 'campanaId', encabezado: 'Campaña', ordenable: false, formatear: formateadores.guidCorto },
   ];
@@ -49,18 +49,14 @@ export function PaginaActividades() {
     },
   ];
 
-  const manejarCrear = async (dto: CrearActividadDto) => {
-    await crear(dto);
-    agregarNotificacion({ tipo: 'exito', mensaje: 'Actividad registrada correctamente' });
-    refetch();
-    setDialogoAbierto(false);
-    setEditando(null);
-  };
-
-  const manejarActualizar = async (dto: ActualizarActividadDto) => {
-    if (!editando) return;
-    await actualizar({ id: editando.id, dto });
-    agregarNotificacion({ tipo: 'exito', mensaje: 'Actividad actualizada correctamente' });
+  const manejarSubmit = async (dto: CrearActividadDto | ActualizarActividadDto) => {
+    if (editando) {
+      await actualizar({ id: editando.id, dto: dto as ActualizarActividadDto });
+      agregarNotificacion({ tipo: 'exito', mensaje: 'Actividad actualizada correctamente' });
+    } else {
+      await crear(dto as CrearActividadDto);
+      agregarNotificacion({ tipo: 'exito', mensaje: 'Actividad registrada correctamente' });
+    }
     refetch();
     setDialogoAbierto(false);
     setEditando(null);
@@ -95,7 +91,7 @@ export function PaginaActividades() {
         </Button>
       </Box>
 
-      <TablaDatos
+      <TablaDatos<ActividadDto>
         datos={actividades || []}
         columnas={columnas}
         acciones={acciones}
@@ -107,14 +103,13 @@ export function PaginaActividades() {
       <DialogoFormulario
         open={dialogoAbierto}
         onClose={() => { setDialogoAbierto(false); setEditando(null); }}
-        onSubmit={editando ? () => manejarActualizar({}) : () => manejarCrear({})}
         titulo={editando ? `Editar: ${editando.nombre}` : 'Nueva actividad'}
         ancho="lg"
         cargando={creando || actualizando}
       >
         <FormularioActividad
           inicial={editando || undefined}
-          onSubmit={editando ? manejarActualizar : manejarCrear}
+          onSubmit={manejarSubmit}
         />
       </DialogoFormulario>
 

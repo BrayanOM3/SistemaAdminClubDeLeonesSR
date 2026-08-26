@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { Box, TextField, Grid, Controller } from '@mui/material';
-import { useForm } from 'react-hook-form';
+import { Box, TextField, Grid, Typography } from '@mui/material';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import type { CrearAyudaSocialDto, ActualizarAyudaSocialDto, AyudaSocialDto } from '../../tipos/ayudaSocial';
+import type { CrearAyudaSocialDto, ActualizarAyudaSocialDto, AyudaSocialDto, TipoAyuda, EstadoAyuda } from '../../tipos/ayudaSocial';
 
 const esquemaAyudaSocial = z.object({
   beneficiarioId: z.string().uuid('ID de beneficiario inválido').min(1, 'El beneficiario es requerido'),
@@ -50,29 +50,29 @@ export function FormularioAyudaSocial({ inicial, onSubmit }: FormularioAyudaSoci
   const manejarSubmit = async (data: FormularioAyudaSocialData) => {
     const dto: CrearAyudaSocialDto | ActualizarAyudaSocialDto = {
       beneficiarioId: data.beneficiarioId,
-      tipo: data.tipo,
+      tipo: data.tipo as TipoAyuda,
       descripcion: data.descripcion,
       monto: data.monto ?? undefined,
       fechaEntrega: data.fechaEntrega,
       campanaId: data.campanaId || undefined,
       voluntarioId: data.voluntarioId || undefined,
-      estado: data.estado,
+      estado: data.estado as EstadoAyuda,
     };
     await onSubmit(dto);
   };
 
-  const opcionesTipo = ['Alimentos', 'Medicamentos', 'Educacion', 'Vivienda', 'Vestimenta', 'Economica', 'Otro'] as const;
-  const opcionesEstado = ['Entregada', 'Pendiente', 'Cancelada'] as const;
+  const opcionesTipo: TipoAyuda[] = ['Alimentos', 'Medicamentos', 'Educacion', 'Vivienda', 'Vestimenta', 'Economica', 'Otro'];
+  const opcionesEstado: EstadoAyuda[] = ['Entregada', 'Pendiente', 'Cancelada'];
   const esEconomica = form.watch('tipo') === 'Economica';
 
   return (
     <form onSubmit={form.handleSubmit(manejarSubmit)} noValidate>
       <Box component="fieldset" sx={{ mb: 2 }}>
-        <legend sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
+        <Typography variant="body2" sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
           Información de la ayuda
-        </legend>
+        </Typography>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="beneficiarioId"
               control={form.control}
@@ -89,7 +89,7 @@ export function FormularioAyudaSocial({ inicial, onSubmit }: FormularioAyudaSoci
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="tipo"
               control={form.control}
@@ -102,7 +102,11 @@ export function FormularioAyudaSocial({ inicial, onSubmit }: FormularioAyudaSoci
                   {...field}
                   error={!!form.formState.errors.tipo}
                   helperText={form.formState.errors.tipo?.message}
-                  SelectProps={{ native: true }}
+                  slotProps={{
+                    select: {
+                      native: true,
+                    },
+                  }}
                 >
                   {opcionesTipo.map((opcion) => (
                     <option key={opcion} value={opcion}>{opcion}</option>
@@ -111,7 +115,7 @@ export function FormularioAyudaSocial({ inicial, onSubmit }: FormularioAyudaSoci
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="fechaEntrega"
               control={form.control}
@@ -124,13 +128,15 @@ export function FormularioAyudaSocial({ inicial, onSubmit }: FormularioAyudaSoci
                   {...field}
                   error={!!form.formState.errors.fechaEntrega}
                   helperText={form.formState.errors.fechaEntrega?.message}
-                  InputLabelProps={{ shrink: true }}
+                  slotProps={{
+                    inputLabel: { shrink: true },
+                  }}
                 />
               )}
             />
           </Grid>
           {esEconomica && (
-            <Grid item xs={12} sm={6}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Controller
                 name="monto"
                 control={form.control}
@@ -140,10 +146,10 @@ export function FormularioAyudaSocial({ inicial, onSubmit }: FormularioAyudaSoci
                     fullWidth
                     label="Monto (CRC) *"
                     type="number"
-                    step="0.01"
-                    min="0.01"
+                    slotProps={{
+                      htmlInput: { step: '0.01', min: '0.01' },
+                    }}
                     {...field}
-                    valueAsNumber
                     error={!!form.formState.errors.monto}
                     helperText={form.formState.errors.monto?.message}
                   />
@@ -151,7 +157,7 @@ export function FormularioAyudaSocial({ inicial, onSubmit }: FormularioAyudaSoci
               />
             </Grid>
           )}
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="campanaId"
               control={form.control}
@@ -167,7 +173,7 @@ export function FormularioAyudaSocial({ inicial, onSubmit }: FormularioAyudaSoci
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="voluntarioId"
               control={form.control}
@@ -183,7 +189,7 @@ export function FormularioAyudaSocial({ inicial, onSubmit }: FormularioAyudaSoci
               )}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Controller
               name="estado"
               control={form.control}
@@ -196,7 +202,11 @@ export function FormularioAyudaSocial({ inicial, onSubmit }: FormularioAyudaSoci
                   {...field}
                   error={!!form.formState.errors.estado}
                   helperText={form.formState.errors.estado?.message}
-                  SelectProps={{ native: true }}
+                  slotProps={{
+                    select: {
+                      native: true,
+                    },
+                  }}
                 >
                   {opcionesEstado.map((opcion) => (
                     <option key={opcion} value={opcion}>{opcion}</option>
@@ -209,9 +219,9 @@ export function FormularioAyudaSocial({ inicial, onSubmit }: FormularioAyudaSoci
       </Box>
 
       <Box component="fieldset" sx={{ mb: 2 }}>
-        <legend sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
+        <Typography variant="body2" sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
           Descripción
-        </legend>
+        </Typography>
         <Controller
           name="descripcion"
           control={form.control}
