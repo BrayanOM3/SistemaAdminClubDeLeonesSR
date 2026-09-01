@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SA.ClubDeLeones.Infrastructure;
 using SA.ClubDeLeones.Infrastructure.Autenticacion;
+using SA.ClubDeLeones.WebApi.Converters;
 using SA.ClubDeLeones.WebApi.Middleware;
 using FluentValidation;
 using System.Reflection;
@@ -14,6 +15,8 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.PropertyNamingPolicy = null; // Use PascalCase
+        options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+        options.JsonSerializerOptions.Converters.Add(new NullableDateOnlyJsonConverter());
     });
 builder.Services.AddValidatorsFromAssembly(typeof(SA.ClubDeLeones.Application.Mapeos.PerfilMapeos).Assembly);
 builder.Services.AddEndpointsApiExplorer();
@@ -57,13 +60,19 @@ builder.Services.AddInfraestructura(builder.Configuration);
 var jwtOpciones = builder.Configuration.GetSection("Jwt").Get<JwtOpciones>()
     ?? throw new InvalidOperationException("Configuración JWT no encontrada");
 
+const string jwtKeyId = "sa-club-de-leones-key";
+var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOpciones.ClaveSecreta))
+{
+    KeyId = jwtKeyId
+};
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOpciones.ClaveSecreta)),
+            IssuerSigningKey = signingKey,
             ValidateIssuer = true,
             ValidIssuer = jwtOpciones.Emisor,
             ValidateAudience = true,

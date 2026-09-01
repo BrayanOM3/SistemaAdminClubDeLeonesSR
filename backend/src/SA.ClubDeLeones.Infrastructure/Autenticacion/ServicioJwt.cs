@@ -33,7 +33,13 @@ public sealed class ServicioJwt : IServicioJwt
             claims.Add(new Claim("voluntarioId", usuario.VoluntarioId.Value.ToString()));
         }
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_opciones.ClaveSecreta));
+        // Use a consistent Key ID for the symmetric key - must match the validation key
+        const string keyId = "sa-club-de-leones-key";
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_opciones.ClaveSecreta))
+        {
+            KeyId = keyId
+        };
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
@@ -43,6 +49,9 @@ public sealed class ServicioJwt : IServicioJwt
             expires: DateTime.UtcNow.AddMinutes(_opciones.ExpiracionMinutos),
             signingCredentials: creds
         );
+
+        // Add kid header to the token (already included via KeyId in SigningCredentials)
+        token.Header["kid"] = keyId;
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }

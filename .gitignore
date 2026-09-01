@@ -1,6 +1,7 @@
-# Build artifacts
+﻿# Build artifacts
 bin/
 obj/
+*.user
 
 # Logs
 *.log
@@ -9,6 +10,7 @@ obj/
 # IDE
 .vs/
 .vscode/
+.idea/
 *.swp
 *.swo
 
@@ -20,12 +22,17 @@ Thumbs.db
 packages/
 *.nupkg
 
+# Frontend
+node_modules/
+frontend/dist/
+frontend/.vite/
+
 # Migration logs
 backend/migration.log
 
-# Environment files
-*.env.local
+# Environment files / secretos
+.env
+.env.local
 *.env.*.local
-
-# Production config with secrets
+appsettings.Development.json
 **/appsettings.Production.json
