@@ -19,6 +19,7 @@ import { esquemaIniciarSesion, type IniciarSesionFormData } from '../../esquemas
 import { autenticacionServicio } from '../../servicios/autenticacionServicio';
 import { useStoreSesion } from '../../store/storeSesion';
 import { useStoreUI } from '../../store/storeUi';
+import { obtenerMensajeError } from '../../utilidades/manejoErrores';
 
 export function PaginaLogin() {
   const navigate = useNavigate();
@@ -50,14 +51,9 @@ export function PaginaLogin() {
       agregarNotificacion({ tipo: 'exito', mensaje: 'Bienvenido de nuevo' });
       navigate(from, { replace: true });
     } catch (err: unknown) {
-      const mensaje = err instanceof Error ? err.message : 'Error al iniciar sesión';
-      if (err && typeof err === 'object' && 'response' in err) {
-        const axiosError = err as { response?: { data?: { mensaje?: string } } };
-        setError(axiosError.response?.data?.mensaje || 'Credenciales inválidas');
-      } else {
-        setError(mensaje);
-      }
-      agregarNotificacion({ tipo: 'error', mensaje: error || 'Credenciales inválidas' });
+      const mensaje = obtenerMensajeError(err, 'Credenciales inválidas');
+      setError(mensaje);
+      agregarNotificacion({ tipo: 'error', mensaje });
     } finally {
       setCargando(false);
     }
@@ -137,7 +133,7 @@ export function PaginaLogin() {
 
       <Box sx={{ mt: 3, textAlign: 'center' }}>
         <Typography variant="body2" color="text.secondary">
-          Usuario de prueba: <strong>admin@clubdeleones.org</strong> / <strong>Admin123!</strong>
+          Usuario de prueba: <strong>admin</strong> / <strong>Admin123!</strong>
         </Typography>
       </Box>
     </Box>

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using SA.ClubDeLeones.Application.Exceptions;
 using System.Text.Json;
 
 namespace SA.ClubDeLeones.WebApi.Middleware;
@@ -38,6 +39,7 @@ public sealed class ManejadorExcepcionesMiddleware
             InvalidOperationException => (StatusCodes.Status400BadRequest, "Operación inválida", exception.Message),
             UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, "No autorizado", exception.Message),
             ArgumentException => (StatusCodes.Status400BadRequest, "Argumento inválido", exception.Message),
+            ConflictoEntidadException => (StatusCodes.Status409Conflict, "Conflicto", exception.Message),
             _ => (StatusCodes.Status500InternalServerError, "Error interno del servidor", "Ha ocurrido un error inesperado")
         };
 

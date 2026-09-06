@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
-import { Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress, Alert } from '@mui/material';
 import { Add, Edit, Delete, Visibility } from '@mui/icons-material';
 import { useDonaciones, useCrearDonacion, useActualizarDonacion, useEliminarDonacion } from '../../hooks/useDonaciones';
 import { TablaDatos, formateadores } from '../../componentes/TablaDatos';
 import { DialogoFormulario } from '../../componentes/DialogoFormulario';
+import { DialogoConfirmacion } from '../../componentes/DialogoConfirmacion';
 import { FormularioDonacion } from './FormularioDonacion';
 import type { DonacionDto, CrearDonacionDto, ActualizarDonacionDto } from '../../tipos/donacion';
 import { useStoreUI } from '../../store/storeUi';
+import { obtenerMensajeError } from '../../utilidades/manejoErrores';
 
 export function PaginaDonaciones() {
   const { data: donaciones, isLoading, refetch } = useDonaciones();
@@ -52,24 +53,32 @@ export function PaginaDonaciones() {
   ];
 
   const manejarSubmit = async (dto: CrearDonacionDto | ActualizarDonacionDto) => {
-    if (editando) {
-      await actualizar({ id: editando.id, dto: dto as ActualizarDonacionDto });
-      agregarNotificacion({ tipo: 'exito', mensaje: 'Donación actualizada correctamente' });
-    } else {
-      await crear(dto as CrearDonacionDto);
-      agregarNotificacion({ tipo: 'exito', mensaje: 'Donación registrada correctamente' });
+    try {
+      if (editando) {
+        await actualizar({ id: editando.id, dto: dto as ActualizarDonacionDto });
+        agregarNotificacion({ tipo: 'exito', mensaje: 'Donación actualizada correctamente' });
+      } else {
+        await crear(dto as CrearDonacionDto);
+        agregarNotificacion({ tipo: 'exito', mensaje: 'Donación registrada correctamente' });
+      }
+      refetch();
+      setDialogoAbierto(false);
+      setEditando(null);
+    } catch (error) {
+      agregarNotificacion({ tipo: 'error', mensaje: obtenerMensajeError(error) });
     }
-    refetch();
-    setDialogoAbierto(false);
-    setEditando(null);
   };
 
   const manejarEliminar = async () => {
     if (!eliminarConfirmar) return;
-    await eliminar(eliminarConfirmar.id);
-    agregarNotificacion({ tipo: 'exito', mensaje: 'Donación eliminada correctamente' });
-    refetch();
-    setEliminarConfirmar(null);
+    try {
+      await eliminar(eliminarConfirmar.id);
+      agregarNotificacion({ tipo: 'exito', mensaje: 'Donación eliminada correctamente' });
+      refetch();
+      setEliminarConfirmar(null);
+    } catch (error) {
+      agregarNotificacion({ tipo: 'error', mensaje: obtenerMensajeError(error) });
+    }
   };
 
   const abrirNuevo = () => {
@@ -126,33 +135,5 @@ export function PaginaDonaciones() {
         />
       )}
     </Box>
-  );
-}
-
-interface DialogoConfirmacionProps {
-  open: boolean;
-  onClose: () => void;
-  onConfirm: () => Promise<void>;
-  titulo: string;
-  mensaje: string;
-  cargando?: boolean;
-}
-
-function DialogoConfirmacion({ open, onClose, onConfirm, titulo, mensaje, cargando = false }: DialogoConfirmacionProps) {
-  return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{titulo}</DialogTitle>
-      <DialogContent>
-        <Typography>{mensaje}</Typography>
-        <Alert severity="warning" sx={{ mt: 2 }}>Esta acción no se puede deshacer.</Alert>
-      </DialogContent>
-      <DialogActions>
-        <Box sx={{ flexGrow: 1 }} />
-        <Button onClick={onClose} disabled={cargando}>Cancelar</Button>
-        <Button variant="contained" color="error" onClick={onConfirm} disabled={cargando} startIcon={cargando ? <CircularProgress size={18} color="inherit" /> : undefined}>
-          {cargando ? 'Eliminando...' : 'Eliminar'}
-        </Button>
-      </DialogActions>
-    </Dialog>
   );
 }

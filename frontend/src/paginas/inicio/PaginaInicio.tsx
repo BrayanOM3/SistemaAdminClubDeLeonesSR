@@ -24,14 +24,17 @@ import { useDonaciones } from '../../hooks/useDonaciones';
 import { useAyudasSociales } from '../../hooks/useAyudasSociales';
 import { useActividades } from '../../hooks/useActividades';
 import { formatoMoneda, formatoFechaCorta } from '../../utilidades/formateadores';
+import { EsqueletoTarjeta, EsqueletoLista } from '../../componentes/EstadoCargando';
+import { EstadoVacio } from '../../componentes/EstadoVacio';
 
+// Tonalidades complementarias a la paleta Lions (azul #00338D / dorado #FDB913)
 const tarjetasResumen = [
-  { titulo: 'Beneficiarios', icono: <People />, color: '#1B5E20', hook: useBeneficiarios, campo: 'length' },
-  { titulo: 'Voluntarios', icono: <VolunteerActivism />, color: '#2E7D32', hook: useVoluntarios, campo: 'length' },
-  { titulo: 'Campañas', icono: <Campaign />, color: '#388E3C', hook: useCampanas, campo: 'length' },
-  { titulo: 'Donaciones', icono: <AttachMoney />, color: '#43A047', hook: useDonaciones, campo: 'montoTotal' },
-  { titulo: 'Ayudas Sociales', icono: <MedicalServices />, color: '#4CAF50', hook: useAyudasSociales, campo: 'length' },
-  { titulo: 'Actividades', icono: <Event />, color: '#66BB6A', hook: useActividades, campo: 'length' },
+  { titulo: 'Beneficiarios', icono: <People />, color: '#00338D', hook: useBeneficiarios, campo: 'length' },
+  { titulo: 'Voluntarios', icono: <VolunteerActivism />, color: '#2D6BE0', hook: useVoluntarios, campo: 'length' },
+  { titulo: 'Campañas', icono: <Campaign />, color: '#C89211', hook: useCampanas, campo: 'length' },
+  { titulo: 'Donaciones', icono: <AttachMoney />, color: '#FDB913', hook: useDonaciones, campo: 'montoTotal' },
+  { titulo: 'Ayudas Sociales', icono: <MedicalServices />, color: '#00838F', hook: useAyudasSociales, campo: 'length' },
+  { titulo: 'Actividades', icono: <Event />, color: '#6A1B9A', hook: useActividades, campo: 'length' },
 ];
 
 function TarjetaResumen({
@@ -47,25 +50,45 @@ function TarjetaResumen({
   valor: number | string;
   cargando: boolean;
 }) {
+  if (cargando) {
+    return (
+      <Card sx={{ height: '100%', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+        <EsqueletoTarjeta />
+      </Card>
+    );
+  }
+
   return (
-    <Card sx={{ height: '100%', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+    <Card
+      sx={{
+        height: '100%',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+        transition: 'box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out',
+        '&:hover': {
+          boxShadow: '0 6px 20px rgba(0, 51, 141, 0.12)',
+          transform: 'translateY(-2px)',
+        },
+      }}
+    >
       <CardContent>
         <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <Box>
             <Typography variant="body2" color="text.secondary" gutterBottom>
               {titulo}
             </Typography>
-            {cargando ? (
-              <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                <span aria-hidden="true">···</span>
-              </Typography>
-            ) : (
-              <Typography variant="h4" sx={{ fontWeight: 600, color }}>
-                {valor}
-              </Typography>
-            )}
+            <Typography variant="h4" sx={{ fontWeight: 700, color }}>
+              {valor}
+            </Typography>
           </Box>
-          <Avatar sx={{ bgcolor: color + '15', width: 48, height: 48 }}>
+          <Avatar
+            sx={{
+              bgcolor: color + '15',
+              color,
+              width: 48,
+              height: 48,
+              boxShadow: `inset 0 0 0 1px ${color}22`,
+            }}
+          >
             {icono}
           </Avatar>
         </Box>
@@ -138,22 +161,41 @@ export function PaginaInicio() {
         <Grid size={{ xs: 12, lg: 6 }}>
           <Card sx={{ height: '100%' }}>
             <CardContent>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
                 Campañas activas
               </Typography>
-              {campanasActivas.length === 0 ? (
-                <Typography color="text.secondary">No hay campañas activas</Typography>
+              {cargandoCampanas ? (
+                <EsqueletoLista items={3} />
+              ) : campanasActivas.length === 0 ? (
+                <EstadoVacio
+                  icono={<Campaign />}
+                  titulo="Sin campañas activas"
+                  descripcion="Las campañas en curso aparecerán aquí."
+                />
               ) : (
                 campanasActivas.map((campana) => (
-                  <Box key={campana.id} sx={{ mb: 2, p: 1, borderRadius: 1, bgcolor: 'action.hover' }}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+                  <Box
+                    key={campana.id}
+                    sx={{
+                      mb: 2,
+                      p: 1.5,
+                      borderRadius: 1.5,
+                      bgcolor: 'rgba(0, 51, 141, 0.025)',
+                      border: '1px solid rgba(0, 51, 141, 0.06)',
+                      transition: 'background-color 0.15s ease-in-out',
+                      '&:hover': {
+                        bgcolor: 'rgba(0, 51, 141, 0.05)',
+                      },
+                    }}
+                  >
+                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                       {campana.nombre}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
                       {formatoFechaCorta(campana.fechaInicio)} - {campana.fechaFin ? formatoFechaCorta(campana.fechaFin) : 'Sin fecha fin'}
                     </Typography>
                     {campana.objetivoMonto && (
-                      <Typography variant="caption" color="primary.main">
+                      <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 500 }}>
                         Meta: {formatoMoneda(campana.objetivoMonto)}
                       </Typography>
                     )}
@@ -167,15 +209,34 @@ export function PaginaInicio() {
         <Grid size={{ xs: 12, lg: 6 }}>
           <Card sx={{ height: '100%' }}>
             <CardContent>
-              <Typography variant="h6" gutterBottom>
+              <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
                 Próximas actividades
               </Typography>
-              {proximasActividades.length === 0 ? (
-                <Typography color="text.secondary">No hay actividades programadas</Typography>
+              {cargandoActividades ? (
+                <EsqueletoLista items={3} />
+              ) : proximasActividades.length === 0 ? (
+                <EstadoVacio
+                  icono={<Event />}
+                  titulo="Sin actividades programadas"
+                  descripcion="Las próximas actividades del club aparecerán aquí."
+                />
               ) : (
                 proximasActividades.map((actividad) => (
-                  <Box key={actividad.id} sx={{ mb: 2, p: 1, borderRadius: 1, bgcolor: 'action.hover' }}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+                  <Box
+                    key={actividad.id}
+                    sx={{
+                      mb: 2,
+                      p: 1.5,
+                      borderRadius: 1.5,
+                      bgcolor: 'rgba(0, 51, 141, 0.025)',
+                      border: '1px solid rgba(0, 51, 141, 0.06)',
+                      transition: 'background-color 0.15s ease-in-out',
+                      '&:hover': {
+                        bgcolor: 'rgba(0, 51, 141, 0.05)',
+                      },
+                    }}
+                  >
+                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                       {actividad.nombre}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">

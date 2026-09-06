@@ -7,12 +7,21 @@ import {
   Button,
   Box,
   CircularProgress,
+  Slide,
 } from '@mui/material';
+import type { TransitionProps } from '@mui/material/transitions';
+import { forwardRef } from 'react';
+
+const TransicionSlide = forwardRef(function TransicionSlide(
+  props: TransitionProps & { children: ReactNode },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} timeout={{ enter: 250, exit: 200 }} />;
+});
 
 interface DialogoFormularioProps {
   open: boolean;
   onClose: () => void;
-  onSubmit?: () => Promise<void>;
   titulo: string;
   children: ReactNode;
   cargando?: boolean;
@@ -23,7 +32,6 @@ interface DialogoFormularioProps {
 export function DialogoFormulario({
   open,
   onClose,
-  onSubmit,
   titulo,
   children,
   cargando = false,
@@ -36,6 +44,8 @@ export function DialogoFormulario({
       onClose={deshabilitarCerrar ? undefined : onClose}
       maxWidth={ancho === 'full' ? false : ancho}
       fullWidth={ancho !== 'full'}
+      disableRestoreFocus
+      TransitionComponent={TransicionSlide}
       sx={{
         '& .MuiDialog-paper': {
           maxWidth: ancho === 'full' ? '95vw' : undefined,
@@ -53,10 +63,16 @@ export function DialogoFormulario({
       </DialogContent>
       <DialogActions sx={{ px: 3, py: 2, borderTop: 1, borderColor: 'divider' }}>
         <Box sx={{ flexGrow: 1 }} />
-        <Button onClick={onClose} disabled={cargando || deshabilitarCerrar}>
+        <Button type="button" onClick={onClose} disabled={cargando || deshabilitarCerrar}>
           Cancelar
         </Button>
-        <Button variant="contained" onClick={onSubmit} disabled={cargando} startIcon={cargando ? <CircularProgress size={18} color="inherit" /> : undefined}>
+        <Button
+          type="submit"
+          variant="contained"
+          form="formulario-dialogo"
+          disabled={cargando}
+          startIcon={cargando ? <CircularProgress size={18} color="inherit" /> : undefined}
+        >
           {cargando ? 'Guardando...' : 'Guardar'}
         </Button>
       </DialogActions>

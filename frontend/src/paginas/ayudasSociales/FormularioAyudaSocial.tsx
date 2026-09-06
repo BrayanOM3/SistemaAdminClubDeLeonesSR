@@ -1,18 +1,22 @@
 import { useEffect } from 'react';
 import { Box, TextField, Grid, Typography } from '@mui/material';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useBeneficiarios } from '../../hooks/useBeneficiarios';
+import { useCampanas } from '../../hooks/useCampanas';
+import { useVoluntarios } from '../../hooks/useVoluntarios';
+import { SelectorEntidad } from '../../componentes/SelectorEntidad';
 import type { CrearAyudaSocialDto, ActualizarAyudaSocialDto, AyudaSocialDto, TipoAyuda, EstadoAyuda } from '../../tipos/ayudaSocial';
 
 const esquemaAyudaSocial = z.object({
-  beneficiarioId: z.string().uuid('ID de beneficiario inválido').min(1, 'El beneficiario es requerido'),
+  beneficiarioId: z.string().min(1, 'El beneficiario es requerido'),
   tipo: z.enum(['Alimentos', 'Medicamentos', 'Educacion', 'Vivienda', 'Vestimenta', 'Economica', 'Otro']),
   descripcion: z.string().min(10, 'Mínimo 10 caracteres').max(500),
-  monto: z.number().min(0, 'El monto no puede ser negativo').optional().nullable(),
+  monto: z.coerce.number().min(0.01, 'El monto debe ser mayor a cero').max(9999999999.99, 'El monto excede el máximo permitido').optional().nullable(),
   fechaEntrega: z.string().min(1, 'La fecha de entrega es requerida'),
-  campanaId: z.string().uuid('ID de campaña inválido').optional().nullable(),
-  voluntarioId: z.string().uuid('ID de voluntario inválido').optional().nullable(),
+  campanaId: z.string().optional().nullable(),
+  voluntarioId: z.string().optional().nullable(),
   estado: z.enum(['Entregada', 'Pendiente', 'Cancelada']),
 });
 
@@ -30,13 +34,13 @@ export function FormularioAyudaSocial({ inicial, onSubmit }: FormularioAyudaSoci
     descripcion: inicial?.descripcion || '',
     monto: inicial?.monto ?? null,
     fechaEntrega: inicial?.fechaEntrega ? inicial.fechaEntrega.split('T')[0] : new Date().toISOString().split('T')[0],
-    campanaId: inicial?.campanaId || '',
-    voluntarioId: inicial?.voluntarioId || '',
+    campanaId: inicial?.campanaId || null,
+    voluntarioId: inicial?.voluntarioId || null,
     estado: (inicial?.estado as FormularioAyudaSocialData['estado']) || 'Pendiente',
   };
 
   const form = useForm<FormularioAyudaSocialData>({
-    resolver: zodResolver(esquemaAyudaSocial),
+    resolver: zodResolver(esquemaAyudaSocial) as Resolver<FormularioAyudaSocialData>,
     defaultValues: valoresIniciales,
     mode: 'onBlur',
   });
@@ -46,6 +50,13 @@ export function FormularioAyudaSocial({ inicial, onSubmit }: FormularioAyudaSoci
       form.reset(valoresIniciales);
     }
   }, [inicial, form]);
+
+  const { data: beneficiarios, isLoading: beneficiariosCargando } = useBeneficiarios();
+  const { data: campanas, isLoading: campanasCargando } = useCampanas();
+  const { data: voluntarios, isLoading: voluntariosCargando } = useVoluntarios();
+  const opcionesBeneficiarios = (beneficiarios || []).map((b) => ({ id: b.id, etiqueta: b.nombreCompleto }));
+  const opcionesCampanas = (campanas || []).map((c) => ({ id: c.id, etiqueta: c.nombre }));
+  const opcionesVoluntarios = (voluntarios || []).map((v) => ({ id: v.id, etiqueta: v.nombreCompleto }));
 
   const manejarSubmit = async (data: FormularioAyudaSocialData) => {
     const dto: CrearAyudaSocialDto | ActualizarAyudaSocialDto = {
@@ -66,7 +77,7 @@ export function FormularioAyudaSocial({ inicial, onSubmit }: FormularioAyudaSoci
   const esEconomica = form.watch('tipo') === 'Economica';
 
   return (
-    <form onSubmit={form.handleSubmit(manejarSubmit)} noValidate>
+    <form id="formulario-dialogo" onSubmit={form.handleSubmit(manejarSubmit)} noValidate>
       <Box component="fieldset" sx={{ mb: 2 }}>
         <Typography variant="body2" sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
           Información de la ayuda
@@ -78,13 +89,15 @@ export function FormularioAyudaSocial({ inicial, onSubmit }: FormularioAyudaSoci
               control={form.control}
               rules={{ required: 'El beneficiario es requerido' }}
               render={({ field }) => (
-                <TextField
-                  fullWidth
-                  label="ID Beneficiario *"
-                  {...field}
+                <SelectorEntidad
+                  opciones={opcionesBeneficiarios}
+                  value={field.value ?? null}
+                  onChange={field.onChange}
+                  label="Beneficiario"
+                  requerido
+                  cargando={beneficiariosCargando}
                   error={!!form.formState.errors.beneficiarioId}
                   helperText={form.formState.errors.beneficiarioId?.message}
-                  placeholder="UUID del beneficiario"
                 />
               )}
             />
@@ -147,9 +160,10 @@ export function FormularioAyudaSocial({ inicial, onSubmit }: FormularioAyudaSoci
                     label="Monto (CRC) *"
                     type="number"
                     slotProps={{
-                      htmlInput: { step: '0.01', min: '0.01' },
+                      htmlInput: { step: '0.01', min: '0.01', max: '9999999999.99' },
                     }}
                     {...field}
+                    value={field.value ?? ''}
                     error={!!form.formState.errors.monto}
                     helperText={form.formState.errors.monto?.message}
                   />
@@ -162,13 +176,14 @@ export function FormularioAyudaSocial({ inicial, onSubmit }: FormularioAyudaSoci
               name="campanaId"
               control={form.control}
               render={({ field }) => (
-                <TextField
-                  fullWidth
-                  label="ID Campaña (opcional)"
-                  {...field}
+                <SelectorEntidad
+                  opciones={opcionesCampanas}
+                  value={field.value ?? null}
+                  onChange={field.onChange}
+                  label="Campaña"
+                  cargando={campanasCargando}
                   error={!!form.formState.errors.campanaId}
                   helperText={form.formState.errors.campanaId?.message}
-                  placeholder="UUID de la campaña"
                 />
               )}
             />
@@ -178,13 +193,14 @@ export function FormularioAyudaSocial({ inicial, onSubmit }: FormularioAyudaSoci
               name="voluntarioId"
               control={form.control}
               render={({ field }) => (
-                <TextField
-                  fullWidth
-                  label="ID Voluntario (opcional)"
-                  {...field}
+                <SelectorEntidad
+                  opciones={opcionesVoluntarios}
+                  value={field.value ?? null}
+                  onChange={field.onChange}
+                  label="Voluntario"
+                  cargando={voluntariosCargando}
                   error={!!form.formState.errors.voluntarioId}
                   helperText={form.formState.errors.voluntarioId?.message}
-                  placeholder="UUID del voluntario"
                 />
               )}
             />

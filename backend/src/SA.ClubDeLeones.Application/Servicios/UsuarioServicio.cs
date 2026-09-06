@@ -1,4 +1,5 @@
 using SA.ClubDeLeones.Application.Dtos.Usuarios;
+using SA.ClubDeLeones.Application.Exceptions;
 using SA.ClubDeLeones.Application.Interfaces.Servicios;
 using SA.ClubDeLeones.Domain.Interfaces;
 using AutoMapper;
@@ -103,7 +104,16 @@ public class UsuarioServicio : IUsuarioServicio
         if (entidad == null) return false;
 
         _unitOfWork.Usuarios.Eliminar(entidad);
-        await _unitOfWork.GuardarCambiosAsync();
+
+        try
+        {
+            await _unitOfWork.GuardarCambiosAsync();
+        }
+        catch (ConflictoEntidadException)
+        {
+            throw new ConflictoEntidadException("No se puede eliminar el usuario porque tiene registros asociados.");
+        }
+
         return true;
     }
 

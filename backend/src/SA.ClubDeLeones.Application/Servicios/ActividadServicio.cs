@@ -1,4 +1,5 @@
 using SA.ClubDeLeones.Application.Dtos.Actividades;
+using SA.ClubDeLeones.Application.Exceptions;
 using SA.ClubDeLeones.Application.Interfaces.Servicios;
 using SA.ClubDeLeones.Domain.Interfaces;
 using AutoMapper;
@@ -62,7 +63,16 @@ public class ActividadServicio : IActividadServicio
         if (entidad == null) return false;
 
         _unitOfWork.Actividades.Eliminar(entidad);
-        await _unitOfWork.GuardarCambiosAsync();
+
+        try
+        {
+            await _unitOfWork.GuardarCambiosAsync();
+        }
+        catch (ConflictoEntidadException)
+        {
+            throw new ConflictoEntidadException("No se puede eliminar la actividad porque tiene registros asociados.");
+        }
+
         return true;
     }
 }

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Box, TextField, Grid, Typography } from '@mui/material';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import type { CrearCampanaDto, ActualizarCampanaDto, CampanaDto } from '../../tipos/campana';
@@ -10,7 +10,7 @@ const esquemaCampana = z.object({
   descripcion: z.string().min(10, 'Mínimo 10 caracteres').max(500),
   fechaInicio: z.string().min(1, 'La fecha de inicio es requerida'),
   fechaFin: z.string().optional().nullable(),
-  objetivoMonto: z.number().min(0, 'El objetivo no puede ser negativo').optional().nullable(),
+  objetivoMonto: z.coerce.number().min(0.01, 'El objetivo debe ser mayor a cero').max(9999999999.99, 'El objetivo excede el máximo permitido').optional().nullable(),
   estado: z.enum(['Planificada', 'Activa', 'Finalizada', 'Cancelada']),
   tipo: z.enum(['Recaudacion', 'EnEspecie', 'Voluntariado', 'Mixta']),
 });
@@ -34,7 +34,7 @@ export function FormularioCampana({ inicial, onSubmit }: FormularioCampanaProps)
   };
 
   const form = useForm<FormularioCampanaData>({
-    resolver: zodResolver(esquemaCampana),
+    resolver: zodResolver(esquemaCampana) as Resolver<FormularioCampanaData>,
     defaultValues: valoresIniciales,
     mode: 'onBlur',
   });
@@ -62,7 +62,7 @@ export function FormularioCampana({ inicial, onSubmit }: FormularioCampanaProps)
   const opcionesTipo = ['Recaudacion', 'EnEspecie', 'Voluntariado', 'Mixta'] as const;
 
   return (
-    <form onSubmit={form.handleSubmit(manejarSubmit)} noValidate>
+    <form id="formulario-dialogo" onSubmit={form.handleSubmit(manejarSubmit)} noValidate>
       <Box component="fieldset" sx={{ mb: 2 }}>
         <Typography variant="body2" sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
           Información general
@@ -151,9 +151,10 @@ export function FormularioCampana({ inicial, onSubmit }: FormularioCampanaProps)
                   label="Objetivo monetario (CRC)"
                   type="number"
                   slotProps={{
-                    htmlInput: { step: '0.01', min: '0' },
+                    htmlInput: { step: '0.01', min: '0.01', max: '9999999999.99' },
                   }}
                   {...field}
+                  value={field.value ?? ''}
                   error={!!form.formState.errors.objetivoMonto}
                   helperText={form.formState.errors.objetivoMonto?.message}
                 />

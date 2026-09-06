@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using SA.ClubDeLeones.Application.Exceptions;
 using SA.ClubDeLeones.Domain.Entidades;
 using SA.ClubDeLeones.Domain.Interfaces;
 using SA.ClubDeLeones.Infrastructure.Persistencia.Repositorios;
@@ -36,7 +38,21 @@ public class UnitOfWork : IUnitOfWork
 
     public async Task<int> GuardarCambiosAsync(CancellationToken ct = default)
     {
-        return await _context.SaveChangesAsync(ct);
+        try
+        {
+            return await _context.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException ex) when (EsViolacionClaveForanea(ex))
+        {
+            throw new ConflictoEntidadException(
+                "No se puede completar la operación: el registro tiene datos asociados en otras entidades del sistema.", ex);
+        }
+    }
+
+    // PostgreSQL SqlState 23503 = foreign_key_violation
+    private static bool EsViolacionClaveForanea(DbUpdateException ex)
+    {
+        return ex.InnerException is Npgsql.PostgresException { SqlState: "23503" };
     }
 
     public void Dispose()

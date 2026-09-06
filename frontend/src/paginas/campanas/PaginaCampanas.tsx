@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
-import { Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress, Alert } from '@mui/material';
 import { Add, Edit, Delete, Visibility } from '@mui/icons-material';
 import { useCampanas, useCrearCampana, useActualizarCampana, useEliminarCampana } from '../../hooks/useCampanas';
 import { TablaDatos, formateadores } from '../../componentes/TablaDatos';
 import { DialogoFormulario } from '../../componentes/DialogoFormulario';
+import { DialogoConfirmacion } from '../../componentes/DialogoConfirmacion';
 import { FormularioCampana } from './FormularioCampana';
 import type { CampanaDto, CrearCampanaDto, ActualizarCampanaDto } from '../../tipos/campana';
 import { useStoreUI } from '../../store/storeUi';
+import { obtenerMensajeError } from '../../utilidades/manejoErrores';
 
 export function PaginaCampanas() {
   const { data: campanas, isLoading, refetch } = useCampanas();
@@ -51,24 +52,32 @@ export function PaginaCampanas() {
   ];
 
   const manejarSubmit = async (dto: CrearCampanaDto | ActualizarCampanaDto) => {
-    if (editando) {
-      await actualizar({ id: editando.id, dto: dto as ActualizarCampanaDto });
-      agregarNotificacion({ tipo: 'exito', mensaje: 'Campaña actualizada correctamente' });
-    } else {
-      await crear(dto as CrearCampanaDto);
-      agregarNotificacion({ tipo: 'exito', mensaje: 'Campaña creada correctamente' });
+    try {
+      if (editando) {
+        await actualizar({ id: editando.id, dto: dto as ActualizarCampanaDto });
+        agregarNotificacion({ tipo: 'exito', mensaje: 'Campaña actualizada correctamente' });
+      } else {
+        await crear(dto as CrearCampanaDto);
+        agregarNotificacion({ tipo: 'exito', mensaje: 'Campaña creada correctamente' });
+      }
+      refetch();
+      setDialogoAbierto(false);
+      setEditando(null);
+    } catch (error) {
+      agregarNotificacion({ tipo: 'error', mensaje: obtenerMensajeError(error) });
     }
-    refetch();
-    setDialogoAbierto(false);
-    setEditando(null);
   };
 
   const manejarEliminar = async () => {
     if (!eliminarConfirmar) return;
-    await eliminar(eliminarConfirmar.id);
-    agregarNotificacion({ tipo: 'exito', mensaje: 'Campaña eliminada correctamente' });
-    refetch();
-    setEliminarConfirmar(null);
+    try {
+      await eliminar(eliminarConfirmar.id);
+      agregarNotificacion({ tipo: 'exito', mensaje: 'Campaña eliminada correctamente' });
+      refetch();
+      setEliminarConfirmar(null);
+    } catch (error) {
+      agregarNotificacion({ tipo: 'error', mensaje: obtenerMensajeError(error) });
+    }
   };
 
   const abrirNuevo = () => {
@@ -125,33 +134,5 @@ export function PaginaCampanas() {
         />
       )}
     </Box>
-  );
-}
-
-interface DialogoConfirmacionProps {
-  open: boolean;
-  onClose: () => void;
-  onConfirm: () => Promise<void>;
-  titulo: string;
-  mensaje: string;
-  cargando?: boolean;
-}
-
-function DialogoConfirmacion({ open, onClose, onConfirm, titulo, mensaje, cargando = false }: DialogoConfirmacionProps) {
-  return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{titulo}</DialogTitle>
-      <DialogContent>
-        <Typography>{mensaje}</Typography>
-        <Alert severity="warning" sx={{ mt: 2 }}>Esta acción no se puede deshacer.</Alert>
-      </DialogContent>
-      <DialogActions>
-        <Box sx={{ flexGrow: 1 }} />
-        <Button onClick={onClose} disabled={cargando}>Cancelar</Button>
-        <Button variant="contained" color="error" onClick={onConfirm} disabled={cargando} startIcon={cargando ? <CircularProgress size={18} color="inherit" /> : undefined}>
-          {cargando ? 'Eliminando...' : 'Eliminar'}
-        </Button>
-      </DialogActions>
-    </Dialog>
   );
 }

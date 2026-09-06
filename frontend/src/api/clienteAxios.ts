@@ -18,8 +18,12 @@ clienteAxios.interceptors.request.use((config) => {
   }
 
   // Transformar datos de salida a PascalCase para el backend
-  if (config.data && typeof config.data === 'object' && !(config.data instanceof FormData)) {
-    config.data = aPascalCase(config.data);
+  try {
+    if (config.data && typeof config.data === 'object' && !(config.data instanceof FormData)) {
+      config.data = aPascalCase(config.data);
+    }
+  } catch (e) {
+    console.warn('Error transformando request a PascalCase:', e);
   }
 
   return config;
@@ -28,8 +32,13 @@ clienteAxios.interceptors.request.use((config) => {
 clienteAxios.interceptors.response.use(
   (response) => {
     // Transformar datos de entrada a camelCase para el frontend
-    if (response.data && typeof response.data === 'object') {
-      response.data = aCamelCase(response.data);
+    try {
+      if (response.data && typeof response.data === 'object') {
+        response.data = aCamelCase(response.data);
+      }
+    } catch (e) {
+      // Si falla la transformación, devolver los datos originales
+      console.warn('Error transformando respuesta a camelCase:', e);
     }
     return response;
   },

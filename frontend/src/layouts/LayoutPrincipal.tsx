@@ -38,6 +38,7 @@ import {
 import { NavLink } from 'react-router-dom';
 import { useStoreSesion } from '../store/storeSesion';
 import { useStoreUI } from '../store/storeUi';
+import logoLeones from '../assets/logo-leones-san-ramon.jpeg';
 
 const itemsMenu = [
   { ruta: '/inicio', icono: <Dashboard />, etiqueta: 'Inicio' },
@@ -131,12 +132,53 @@ export function LayoutPrincipal({ children }: LayoutPrincipalProps) {
 
   const drawer = (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
-        <Typography variant="h6" sx={{ fontWeight: 600, color: 'primary.main' }}>
+      <Box
+        sx={{
+          p: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          background: 'linear-gradient(180deg, rgba(0, 51, 141, 0.03) 0%, transparent 100%)',
+          borderBottom: 1,
+          borderColor: 'divider',
+        }}
+      >
+        <Box
+          component="img"
+          src={logoLeones}
+          alt="Club de Leones de San Ramón"
+          sx={{
+            width: 80,
+            height: 80,
+            objectFit: 'contain',
+            mb: 1,
+            filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))',
+          }}
+        />
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 700,
+            color: 'primary.main',
+            fontSize: '0.9375rem',
+            letterSpacing: '0.02em',
+            textAlign: 'center',
+            lineHeight: 1.2,
+          }}
+        >
           Club de Leones
         </Typography>
-        <Typography variant="caption" color="text.secondary">
-          San Ramón
+        <Typography
+          variant="caption"
+          sx={{
+            color: 'text.secondary',
+            fontSize: '0.6875rem',
+            fontWeight: 500,
+            letterSpacing: '0.04em',
+            textAlign: 'center',
+          }}
+        >
+          San Ramón, Alajuela
         </Typography>
       </Box>
       <Divider />
@@ -164,10 +206,18 @@ export function LayoutPrincipal({ children }: LayoutPrincipalProps) {
           />
         ))}
       </List>
-      <Divider />
-      <Box sx={{ p: 1 }}>
-        <Typography variant="caption" color="text.secondary">
-          v1.0.0
+      <Divider sx={{ borderColor: 'rgba(0, 51, 141, 0.08)' }} />
+      <Box sx={{ p: 1.5, textAlign: 'center' }}>
+        <Typography
+          variant="caption"
+          sx={{
+            color: 'text.secondary',
+            fontSize: '0.625rem',
+            fontWeight: 500,
+            letterSpacing: '0.04em',
+          }}
+        >
+          Club de Leones de San Ramón · v1.0.0
         </Typography>
       </Box>
     </Box>
@@ -177,13 +227,13 @@ export function LayoutPrincipal({ children }: LayoutPrincipalProps) {
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <AppBar
         position="fixed"
-        elevation={1}
+        elevation={0}
         sx={{
           width: { md: `calc(100% - 256px)` },
           ml: { md: '256px' },
           backgroundColor: 'background.paper',
-          borderBottom: 1,
-          borderColor: 'divider',
+          borderBottom: '1px solid rgba(0, 51, 141, 0.06)',
+          backdropFilter: 'blur(8px)',
         }}
       >
         <Toolbar>
@@ -206,7 +256,19 @@ export function LayoutPrincipal({ children }: LayoutPrincipalProps) {
             {temaOscuro ? <LightMode /> : <DarkMode />}
           </IconButton>
           <IconButton onClick={manejarClicMenu} aria-label="Menú usuario">
-            <Avatar sx={{ width: 32, height: 32, bgcolor: 'primary.main' }}>
+            <Avatar
+              sx={{
+                width: 36,
+                height: 36,
+                bgcolor: 'primary.main',
+                fontSize: '0.875rem',
+                fontWeight: 600,
+                border: '2px solid rgba(253, 185, 19, 0.3)',
+                '&:hover': {
+                  borderColor: 'secondary.main',
+                },
+              }}
+            >
               {nombreVoluntario?.[0] || nombreUsuario?.[0] || 'U'}
             </Avatar>
           </IconButton>
@@ -226,8 +288,7 @@ export function LayoutPrincipal({ children }: LayoutPrincipalProps) {
             width: 256,
             boxSizing: 'border-box',
             backgroundColor: 'background.paper',
-            borderRight: 1,
-            borderColor: 'divider',
+            borderRight: '1px solid rgba(0, 51, 141, 0.08)',
           },
         }}
         ModalProps={{ keepMounted: true }}
@@ -239,9 +300,8 @@ export function LayoutPrincipal({ children }: LayoutPrincipalProps) {
         component="main"
         sx={{
           flexGrow: 1,
+          minWidth: 0,
           p: 3,
-          width: { md: `calc(100% - 256px)` },
-          ml: { md: '256px' },
           mt: 8,
           minHeight: 'calc(100vh - 64px)',
           backgroundColor: 'background.default',

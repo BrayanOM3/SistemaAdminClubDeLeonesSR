@@ -1,19 +1,22 @@
 import { useEffect } from 'react';
 import { Box, TextField, Grid, Typography } from '@mui/material';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useCampanas } from '../../hooks/useCampanas';
+import { useVoluntarios } from '../../hooks/useVoluntarios';
+import { SelectorEntidad } from '../../componentes/SelectorEntidad';
 import type { CrearDonacionDto, ActualizarDonacionDto, DonacionDto } from '../../tipos/donacion';
 
 const esquemaDonacion = z.object({
   donanteNombre: z.string().min(2, 'Mínimo 2 caracteres').max(120),
   tipo: z.enum(['Monetaria', 'EnEspecie']),
-  monto: z.number().min(0.01, 'El monto debe ser mayor a 0').optional().nullable(),
+  monto: z.coerce.number().min(0.01, 'El monto debe ser mayor a 0').max(9999999999.99, 'El monto excede el máximo permitido').optional().nullable(),
   descripcion: z.string().max(500).optional().nullable(),
   fecha: z.string().min(1, 'La fecha es requerida'),
   reciboNumero: z.string().max(50).optional().nullable(),
-  campanaId: z.string().uuid('ID de campaña inválido').optional().nullable(),
-  voluntarioId: z.string().uuid('ID de voluntario inválido').optional().nullable(),
+  campanaId: z.string().optional().nullable(),
+  voluntarioId: z.string().optional().nullable(),
 });
 
 type FormularioDonacionData = z.infer<typeof esquemaDonacion>;
@@ -32,12 +35,12 @@ export function FormularioDonacion({ inicial, onSubmit }: FormularioDonacionProp
     descripcion: inicial?.descripcion || '',
     fecha: inicial?.fecha ? inicial.fecha.split('T')[0] : new Date().toISOString().split('T')[0],
     reciboNumero: inicial?.reciboNumero || '',
-    campanaId: inicial?.campanaId || '',
-    voluntarioId: inicial?.voluntarioId || '',
+    campanaId: inicial?.campanaId || null,
+    voluntarioId: inicial?.voluntarioId || null,
   };
 
   const form = useForm<FormularioDonacionData>({
-    resolver: zodResolver(esquemaDonacion),
+    resolver: zodResolver(esquemaDonacion) as Resolver<FormularioDonacionData>,
     defaultValues: valoresIniciales,
     mode: 'onBlur',
   });
@@ -47,6 +50,11 @@ export function FormularioDonacion({ inicial, onSubmit }: FormularioDonacionProp
       form.reset(valoresIniciales);
     }
   }, [inicial, form]);
+
+  const { data: campanas, isLoading: campanasCargando } = useCampanas();
+  const { data: voluntarios, isLoading: voluntariosCargando } = useVoluntarios();
+  const opcionesCampanas = (campanas || []).map((c) => ({ id: c.id, etiqueta: c.nombre }));
+  const opcionesVoluntarios = (voluntarios || []).map((v) => ({ id: v.id, etiqueta: v.nombreCompleto }));
 
   const manejarSubmit = async (data: FormularioDonacionData) => {
     const dto: CrearDonacionDto | ActualizarDonacionDto = {
@@ -65,7 +73,7 @@ export function FormularioDonacion({ inicial, onSubmit }: FormularioDonacionProp
   const esMonetaria = form.watch('tipo') === 'Monetaria';
 
   return (
-    <form onSubmit={form.handleSubmit(manejarSubmit)} noValidate>
+    <form id="formulario-dialogo" onSubmit={form.handleSubmit(manejarSubmit)} noValidate>
       <Box component="fieldset" sx={{ mb: 2 }}>
         <Typography variant="body2" sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
           Información de la donación
@@ -124,9 +132,10 @@ export function FormularioDonacion({ inicial, onSubmit }: FormularioDonacionProp
                     label="Monto (CRC) *"
                     type="number"
                     slotProps={{
-                      htmlInput: { step: '0.01', min: '0.01' },
+                      htmlInput: { step: '0.01', min: '0.01', max: '9999999999.99' },
                     }}
                     {...field}
+                    value={field.value ?? ''}
                     error={!!form.formState.errors.monto}
                     helperText={form.formState.errors.monto?.message}
                   />
@@ -174,13 +183,14 @@ export function FormularioDonacion({ inicial, onSubmit }: FormularioDonacionProp
               name="campanaId"
               control={form.control}
               render={({ field }) => (
-                <TextField
-                  fullWidth
-                  label="ID de campaña (opcional)"
-                  {...field}
+                <SelectorEntidad
+                  opciones={opcionesCampanas}
+                  value={field.value ?? null}
+                  onChange={field.onChange}
+                  label="Campaña"
+                  cargando={campanasCargando}
                   error={!!form.formState.errors.campanaId}
                   helperText={form.formState.errors.campanaId?.message}
-                  placeholder="UUID de la campaña"
                 />
               )}
             />
@@ -190,13 +200,14 @@ export function FormularioDonacion({ inicial, onSubmit }: FormularioDonacionProp
               name="voluntarioId"
               control={form.control}
               render={({ field }) => (
-                <TextField
-                  fullWidth
-                  label="ID de voluntario (opcional)"
-                  {...field}
+                <SelectorEntidad
+                  opciones={opcionesVoluntarios}
+                  value={field.value ?? null}
+                  onChange={field.onChange}
+                  label="Voluntario"
+                  cargando={voluntariosCargando}
                   error={!!form.formState.errors.voluntarioId}
                   helperText={form.formState.errors.voluntarioId?.message}
-                  placeholder="UUID del voluntario"
                 />
               )}
             />

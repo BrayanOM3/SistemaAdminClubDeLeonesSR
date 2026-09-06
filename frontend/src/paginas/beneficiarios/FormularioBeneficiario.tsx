@@ -68,7 +68,7 @@ export function FormularioBeneficiario({ inicial, onSubmit }: FormularioBenefici
   const opcionesEstadoCivil = ['Soltero', 'Casado', 'Viudo', 'Divorciado', 'Otro'] as const;
 
   return (
-    <form onSubmit={form.handleSubmit(manejarSubmit)} noValidate>
+    <form id="formulario-dialogo" onSubmit={form.handleSubmit(manejarSubmit)} noValidate>
       <Box component="fieldset" sx={{ mb: 2 }}>
         <Typography variant="body2" sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
           Información personal

@@ -16,9 +16,10 @@ import {
   Typography,
   InputBase,
 } from '@mui/material';
-import { Search } from '@mui/icons-material';
-import { useState, useMemo } from 'react';
+import { Search, InboxOutlined } from '@mui/icons-material';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { formatoFechaCorta, formatoMoneda } from '../utilidades/formateadores';
+import { EsqueletoTabla } from './EstadoCargando';
 
 export interface ColumnaTabla<T> {
   campo: keyof T | string;
@@ -68,12 +69,26 @@ export function TablaDatos<T>({
   const [pagina, setPagina] = useState(0);
   const [filasPorPagina, setFilasPorPagina] = useState(filasPorPaginaInicial);
   const [busqueda, setBusqueda] = useState('');
+  const [busquedaDebounced, setBusquedaDebounced] = useState('');
+
+  // Debounce en la búsqueda (300ms)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setBusquedaDebounced(busqueda);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [busqueda]);
+
+  // Reset página al buscar
+  useEffect(() => {
+    setPagina(0);
+  }, [busquedaDebounced]);
 
   const datosFiltrados = useMemo(() => {
     let resultado = [...datos];
 
-    if (busqueda.trim()) {
-      const termino = busqueda.toLowerCase().trim();
+    if (busquedaDebounced.trim()) {
+      const termino = busquedaDebounced.toLowerCase().trim();
       resultado = resultado.filter((fila) =>
         Object.values(fila as Record<string, unknown>).some(
           (valor) => valor?.toString().toLowerCase().includes(termino)
@@ -88,7 +103,6 @@ export function TablaDatos<T>({
         const valorA = filaA[orden.campo];
         const valorB = filaB[orden.campo];
         if (valorA === valorB) return 0;
-        // Convert to string for comparison since values could be various types
         const strA = String(valorA ?? '');
         const strB = String(valorB ?? '');
         const comparacion = strA.localeCompare(strB);
@@ -97,52 +111,84 @@ export function TablaDatos<T>({
     }
 
     return resultado;
-  }, [datos, busqueda, orden]);
+  }, [datos, busquedaDebounced, orden]);
 
   const datosPaginados = paginacion
     ? datosFiltrados.slice(pagina * filasPorPagina, pagina * filasPorPagina + filasPorPagina)
     : datosFiltrados;
 
-  const manejarOrden = (campo: string) => {
+  const manejarOrden = useCallback((campo: string) => {
     setOrden((prev) => ({
       campo,
       direccion: prev.campo === campo && prev.direccion === 'asc' ? 'desc' : 'asc',
     }));
-  };
+  }, []);
 
-  const manejarCambioPagina = (_: unknown, nuevaPagina: number) => {
+  const manejarCambioPagina = useCallback((_: unknown, nuevaPagina: number) => {
     setPagina(nuevaPagina);
-  };
+  }, []);
 
-  const manejarCambioFilasPorPagina = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const manejarCambioFilasPorPagina = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setFilasPorPagina(Number(event.target.value));
     setPagina(0);
-  };
+  }, []);
 
-  const manejarClicFila = (fila: T) => {
+  const manejarClicFila = useCallback((fila: T) => {
     if (onRowClick) onRowClick(fila);
-  };
+  }, [onRowClick]);
+
+  const totalColumnas = columnas.length + (acciones && acciones.length > 0 ? 1 : 0);
 
   return (
     <Paper sx={{ overflow: 'hidden' }}>
-      {titulo && (
-        <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
+      {/* Header con título y búsqueda */}
+      <Box
+        sx={{
+          p: 2.5,
+          pb: 2,
+          borderBottom: 1,
+          borderColor: 'divider',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 1.5,
+        }}
+      >
+        {titulo ? (
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
             {titulo}
           </Typography>
-          <InputBase
-            placeholder={buscarPlaceholder}
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
-            sx={{ width: 300, '& .MuiInputBase-input': { padding: '8px 12px' } }}
-            startAdornment={<Search sx={{ color: 'text.secondary', mr: 1 }} />}
-            size="small"
-          />
-        </Box>
-      )}
+        ) : (
+          <Box />
+        )}
+        <InputBase
+          placeholder={buscarPlaceholder}
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+          sx={{
+            width: 300,
+            borderRadius: 2,
+            backgroundColor: 'rgba(0, 51, 141, 0.03)',
+            border: '1px solid rgba(0, 51, 141, 0.08)',
+            transition: 'all 0.2s ease-in-out',
+            '&:focus-within': {
+              backgroundColor: 'rgba(0, 51, 141, 0.05)',
+              borderColor: 'primary.main',
+              boxShadow: '0 0 0 3px rgba(0, 51, 141, 0.08)',
+            },
+            '& .MuiInputBase-input': {
+              padding: '8px 12px',
+              fontSize: '0.875rem',
+            },
+          }}
+          startAdornment={<Search sx={{ color: 'text.secondary', mr: 1, fontSize: 20 }} />}
+          size="small"
+        />
+      </Box>
 
       <TableContainer sx={{ maxHeight: 600 }}>
-        <Table stickyHeader>
+        <Table stickyHeader size="small">
           <TableHead>
             <TableRow>
               {columnas.map((columna) => (
@@ -166,25 +212,48 @@ export function TablaDatos<T>({
                 </TableCell>
               ))}
               {acciones && acciones.length > 0 && (
-                <TableCell align="center">Acciones</TableCell>
+                <TableCell align="center" sx={{ width: 120 }}>
+                  Acciones
+                </TableCell>
               )}
             </TableRow>
           </TableHead>
           <TableBody>
             {cargando ? (
-              <TableRow>
-                <TableCell colSpan={columnas.length + (acciones && acciones.length > 0 ? 1 : 0)} align="center" sx={{ py: 4 }}>
-                  <Typography variant="body2" color="text.secondary">
-                    Cargando...
-                  </Typography>
-                </TableCell>
-              </TableRow>
+              <EsqueletoTabla columnas={columnas.length} />
             ) : datosPaginados.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={columnas.length + (acciones && acciones.length > 0 ? 1 : 0)} align="center" sx={{ py: 4 }}>
-                  <Typography variant="body2" color="text.secondary">
-                    {vacioMensaje}
-                  </Typography>
+                <TableCell colSpan={totalColumnas} sx={{ p: 0, border: 'none' }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      py: 6,
+                      px: 3,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: 64,
+                        height: 64,
+                        borderRadius: '50%',
+                        backgroundColor: 'rgba(0, 51, 141, 0.04)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        mb: 2,
+                      }}
+                    >
+                      <InboxOutlined sx={{ fontSize: 32, color: 'text.secondary', opacity: 0.5 }} />
+                    </Box>
+                    <Typography variant="body1" sx={{ fontWeight: 500, color: 'text.primary', mb: 0.5 }}>
+                      {vacioMensaje}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Los registros aparecerán aquí cuando estén disponibles.
+                    </Typography>
+                  </Box>
                 </TableCell>
               </TableRow>
             ) : (
@@ -193,12 +262,16 @@ export function TablaDatos<T>({
                   key={String(fila[claveUnica as keyof T]) ?? index}
                   hover
                   onClick={() => manejarClicFila(fila)}
-                  sx={{ cursor: onRowClick ? 'pointer' : 'default' }}
+                  sx={{
+                    cursor: onRowClick ? 'pointer' : 'default',
+                    transition: 'background-color 0.15s ease-in-out',
+                  }}
                 >
                   {columnas.map((columna) => (
                     <TableCell
                       key={String(columna.campo)}
                       align={columna.alinear || 'left'}
+                      sx={{ py: 1.25 }}
                     >
                       {columna.formatear
                         ? columna.formatear(fila[columna.campo as keyof T], fila)
@@ -206,22 +279,43 @@ export function TablaDatos<T>({
                     </TableCell>
                   ))}
                   {acciones && acciones.length > 0 && (
-                    <TableCell align="center">
-                      {acciones.map((accion, i) => (
-                        <Tooltip key={i} title={accion.etiqueta}>
-                          <IconButton
-                            size="small"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              accion.onClick(fila);
-                            }}
-                            disabled={accion.deshabilitado?.(fila)}
-                            color={accion.color || 'primary'}
-                          >
-                            {accion.icono}
-                          </IconButton>
-                        </Tooltip>
-                      ))}
+                    <TableCell align="center" sx={{ py: 1 }}>
+                      <Box
+                        sx={{
+                          display: 'inline-flex',
+                          gap: 0.25,
+                          px: 0.5,
+                          py: 0.25,
+                          borderRadius: 1,
+                          '&:hover': {
+                            backgroundColor: 'rgba(0, 51, 141, 0.04)',
+                          },
+                        }}
+                      >
+                        {acciones.map((accion, i) => (
+                          <Tooltip key={i} title={accion.etiqueta} arrow>
+                            <IconButton
+                              size="small"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                accion.onClick(fila);
+                              }}
+                              disabled={accion.deshabilitado?.(fila)}
+                              color={accion.color || 'primary'}
+                              sx={{
+                                width: 32,
+                                height: 32,
+                                transition: 'all 0.15s ease-in-out',
+                                '&:hover': {
+                                  transform: 'scale(1.1)',
+                                },
+                              }}
+                            >
+                              {accion.icono}
+                            </IconButton>
+                          </Tooltip>
+                        ))}
+                      </Box>
                     </TableCell>
                   )}
                 </TableRow>

@@ -3,6 +3,8 @@ import { Box, TextField, Grid } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useCampanas } from '../../hooks/useCampanas';
+import { SelectorEntidad } from '../../componentes/SelectorEntidad';
 import type { CrearActividadDto, ActualizarActividadDto, ActividadDto, TipoActividad } from '../../tipos/actividad';
 
 const esquemaActividad = z.object({
@@ -11,7 +13,7 @@ const esquemaActividad = z.object({
   tipo: z.enum(['Reunion', 'Evento', 'Jornada', 'Visita']),
   fecha: z.string().min(1, 'La fecha es requerida'),
   lugar: z.string().max(200).optional().nullable(),
-  campanaId: z.string().uuid('ID de campaña inválido').optional().nullable(),
+  campanaId: z.string().optional().nullable(),
 });
 
 type FormularioActividadData = z.infer<typeof esquemaActividad>;
@@ -26,9 +28,9 @@ export function FormularioActividad({ inicial, onSubmit }: FormularioActividadPr
     nombre: inicial?.nombre || '',
     descripcion: inicial?.descripcion || '',
     tipo: (inicial?.tipo as FormularioActividadData['tipo']) || 'Reunion',
-    fecha: inicial?.fecha ? inicial.fecha.split('T')[0] : new Date().toISOString().split('T')[0],
+    fecha: inicial?.fecha ? inicial.fecha.substring(0, 16) : new Date().toISOString().substring(0, 16),
     lugar: inicial?.lugar || '',
-    campanaId: inicial?.campanaId || '',
+    campanaId: inicial?.campanaId || null,
   };
 
   const form = useForm<FormularioActividadData>({
@@ -42,6 +44,9 @@ export function FormularioActividad({ inicial, onSubmit }: FormularioActividadPr
       form.reset(valoresIniciales);
     }
   }, [inicial, form]);
+
+  const { data: campanas, isLoading: campanasCargando } = useCampanas();
+  const opcionesCampanas = (campanas || []).map((c) => ({ id: c.id, etiqueta: c.nombre }));
 
   const manejarSubmit = async (data: FormularioActividadData) => {
     const dto: CrearActividadDto | ActualizarActividadDto = {
@@ -58,7 +63,7 @@ export function FormularioActividad({ inicial, onSubmit }: FormularioActividadPr
   const opcionesTipo: TipoActividad[] = ['Reunion', 'Evento', 'Jornada', 'Visita'];
 
   return (
-    <form onSubmit={form.handleSubmit(manejarSubmit)} noValidate>
+    <form id="formulario-dialogo" onSubmit={form.handleSubmit(manejarSubmit)} noValidate>
       <Box component="fieldset" sx={{ mb: 2 }}>
         <Box sx={{ fontWeight: 500, mb: 1, fontSize: '0.875rem', color: 'text.secondary' }}>
           Información de la actividad
@@ -164,13 +169,14 @@ export function FormularioActividad({ inicial, onSubmit }: FormularioActividadPr
               name="campanaId"
               control={form.control}
               render={({ field }) => (
-                <TextField
-                  fullWidth
-                  label="ID Campaña (opcional)"
-                  {...field}
+                <SelectorEntidad
+                  opciones={opcionesCampanas}
+                  value={field.value ?? null}
+                  onChange={field.onChange}
+                  label="Campaña"
+                  cargando={campanasCargando}
                   error={!!form.formState.errors.campanaId}
                   helperText={form.formState.errors.campanaId?.message}
-                  placeholder="UUID de la campaña"
                 />
               )}
             />

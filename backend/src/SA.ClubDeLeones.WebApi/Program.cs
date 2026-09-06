@@ -6,19 +6,28 @@ using SA.ClubDeLeones.Infrastructure.Autenticacion;
 using SA.ClubDeLeones.WebApi.Converters;
 using SA.ClubDeLeones.WebApi.Middleware;
 using FluentValidation;
+using FluentValidation.AspNetCore;
 using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers()
+    // Evita el mensaje genérico "The X field is required." de ASP.NET (required implícito
+    // sobre tipos de referencia no anulables), que se duplicaba con el mensaje en español
+    // de FluentValidation. La validación de campos requeridos queda 100% a cargo de los validators.
+    .AddMvcOptions(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true)
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.PropertyNamingPolicy = null; // Use PascalCase
         options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
         options.JsonSerializerOptions.Converters.Add(new NullableDateOnlyJsonConverter());
+        options.JsonSerializerOptions.Converters.Add(new UtcDateTimeJsonConverter());
+        options.JsonSerializerOptions.Converters.Add(new NullableUtcDateTimeJsonConverter());
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
     });
 builder.Services.AddValidatorsFromAssembly(typeof(SA.ClubDeLeones.Application.Mapeos.PerfilMapeos).Assembly);
+builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
@@ -72,7 +81,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = signingKey,
+            IssuerSigningKeys = new[] { signingKey },
             ValidateIssuer = true,
             ValidIssuer = jwtOpciones.Emisor,
             ValidateAudience = true,

@@ -1,4 +1,5 @@
 using SA.ClubDeLeones.Application.Dtos.Voluntarios;
+using SA.ClubDeLeones.Application.Exceptions;
 using SA.ClubDeLeones.Application.Interfaces.Servicios;
 using SA.ClubDeLeones.Domain.Interfaces;
 using AutoMapper;
@@ -68,7 +69,16 @@ public class VoluntarioServicio : IVoluntarioServicio
         if (entidad == null) return false;
 
         _unitOfWork.Voluntarios.Eliminar(entidad);
-        await _unitOfWork.GuardarCambiosAsync();
+
+        try
+        {
+            await _unitOfWork.GuardarCambiosAsync();
+        }
+        catch (ConflictoEntidadException)
+        {
+            throw new ConflictoEntidadException("No se puede eliminar el voluntario porque tiene registros asociados.");
+        }
+
         return true;
     }
 

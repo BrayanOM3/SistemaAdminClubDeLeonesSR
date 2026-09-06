@@ -1,4 +1,5 @@
 using SA.ClubDeLeones.Application.Dtos.AyudasSociales;
+using SA.ClubDeLeones.Application.Exceptions;
 using SA.ClubDeLeones.Application.Interfaces.Servicios;
 using SA.ClubDeLeones.Domain.Interfaces;
 using AutoMapper;
@@ -69,7 +70,16 @@ public class AyudaSocialServicio : IAyudaSocialServicio
         if (entidad == null) return false;
 
         _unitOfWork.AyudasSociales.Eliminar(entidad);
-        await _unitOfWork.GuardarCambiosAsync();
+
+        try
+        {
+            await _unitOfWork.GuardarCambiosAsync();
+        }
+        catch (ConflictoEntidadException)
+        {
+            throw new ConflictoEntidadException("No se puede eliminar la ayuda social porque tiene registros asociados.");
+        }
+
         return true;
     }
 }
