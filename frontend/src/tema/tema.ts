@@ -14,6 +14,8 @@ const SOFT_SURFACE_LIGHT = '#F4F7FC'; // Superficies internas (búsqueda, listas
 const SOFT_BG_DARK = '#0A0F1E';       // Fondo oscuro: azul marino profundo
 const SOFT_PAPER_DARK = '#121A2E';    // Panel oscuro
 const TEXT_DARK_NAVY = '#0F2447';     // Texto principal azul marino
+const TEXT_PRIMARY_DARK = '#E8EDF7';   // Texto principal legible sobre panel oscuro
+const TEXT_SECONDARY_DARK = '#8B94AE'; // Texto secundario legible sobre panel oscuro
 
 // ── Sombras difusas "flotantes" ──
 const CARD_SHADOW_LIGHT =
@@ -183,38 +185,44 @@ export const tema = createTheme({
           fontSize: '0.875rem',
           transition: 'all 0.2s ease-in-out',
         },
-        containedPrimary: {
-          background: `linear-gradient(135deg, ${LIONS_BLUE} 0%, ${LIONS_BLUE_LIGHT} 100%)`,
-          boxShadow: '0 8px 18px -8px rgba(0, 51, 141, 0.55)',
-          '&:hover': {
-            background: `linear-gradient(135deg, ${LIONS_BLUE_DARK} 0%, ${LIONS_BLUE} 100%)`,
-            transform: 'translateY(-1px)',
-            boxShadow: '0 10px 22px -8px rgba(0, 51, 141, 0.6)',
+        contained: {
+          '&.MuiButton-colorPrimary': {
+            background: `linear-gradient(135deg, ${LIONS_BLUE} 0%, ${LIONS_BLUE_LIGHT} 100%)`,
+            boxShadow: '0 8px 18px -8px rgba(0, 51, 141, 0.55)',
+            '&:hover': {
+              background: `linear-gradient(135deg, ${LIONS_BLUE_DARK} 0%, ${LIONS_BLUE} 100%)`,
+              transform: 'translateY(-1px)',
+              boxShadow: '0 10px 22px -8px rgba(0, 51, 141, 0.6)',
+            },
+            '&:active': {
+              transform: 'translateY(0)',
+            },
           },
-          '&:active': {
-            transform: 'translateY(0)',
-          },
-        },
-        containedSecondary: {
-          background: `linear-gradient(135deg, ${LIONS_GOLD} 0%, ${LIONS_GOLD_LIGHT} 100%)`,
-          color: '#1A1A2E',
-          boxShadow: '0 8px 18px -8px rgba(253, 185, 19, 0.6)',
-          '&:hover': {
-            background: `linear-gradient(135deg, ${LIONS_GOLD_DARK} 0%, ${LIONS_GOLD} 100%)`,
-            transform: 'translateY(-1px)',
-            boxShadow: '0 10px 22px -8px rgba(253, 185, 19, 0.65)',
-          },
-        },
-        outlinedPrimary: {
-          borderColor: 'rgba(0, 51, 141, 0.3)',
-          '&:hover': {
-            backgroundColor: 'rgba(0, 51, 141, 0.05)',
-            borderColor: LIONS_BLUE,
+          '&.MuiButton-colorSecondary': {
+            background: `linear-gradient(135deg, ${LIONS_GOLD} 0%, ${LIONS_GOLD_LIGHT} 100%)`,
+            color: '#1A1A2E',
+            boxShadow: '0 8px 18px -8px rgba(253, 185, 19, 0.6)',
+            '&:hover': {
+              background: `linear-gradient(135deg, ${LIONS_GOLD_DARK} 0%, ${LIONS_GOLD} 100%)`,
+              transform: 'translateY(-1px)',
+              boxShadow: '0 10px 22px -8px rgba(253, 185, 19, 0.65)',
+            },
           },
         },
-        textPrimary: {
-          '&:hover': {
-            backgroundColor: 'rgba(0, 51, 141, 0.05)',
+        outlined: {
+          '&.MuiButton-colorPrimary': {
+            borderColor: 'rgba(0, 51, 141, 0.3)',
+            '&:hover': {
+              backgroundColor: 'rgba(0, 51, 141, 0.05)',
+              borderColor: LIONS_BLUE,
+            },
+          },
+        },
+        text: {
+          '&.MuiButton-colorPrimary': {
+            '&:hover': {
+              backgroundColor: 'rgba(0, 51, 141, 0.05)',
+            },
           },
         },
       },
@@ -515,8 +523,10 @@ export const tema = createTheme({
           borderRadius: 14,
           fontWeight: 500,
         },
-        filledInfo: {
-          backgroundColor: LIONS_BLUE,
+        filled: {
+          '&.MuiAlert-colorInfo': {
+            backgroundColor: LIONS_BLUE,
+          },
         },
       },
     },
@@ -657,13 +667,50 @@ export const temaOscuro = createTheme({
       paper: SOFT_PAPER_DARK,
     },
     text: {
-      primary: '#E8EDF7',
-      secondary: '#8B94AE',
+      primary: TEXT_PRIMARY_DARK,
+      secondary: TEXT_SECONDARY_DARK,
     },
     divider: 'rgba(255, 255, 255, 0.07)',
   },
+  // En el tema claro las variantes traen color navy hardcodeado (TEXT_DARK_NAVY / #5A6178).
+  // Sin esta anulación, todo <Typography variant="h1..h6|overline|caption"> renderiza texto
+  // oscuro sobre el fondo navy del modo oscuro y queda ilegible.
+  typography: {
+    ...tema.typography,
+    h1: { ...tema.typography?.h1, color: TEXT_PRIMARY_DARK },
+    h2: { ...tema.typography?.h2, color: TEXT_PRIMARY_DARK },
+    h3: { ...tema.typography?.h3, color: TEXT_PRIMARY_DARK },
+    h4: { ...tema.typography?.h4, color: TEXT_PRIMARY_DARK },
+    h5: { ...tema.typography?.h5, color: TEXT_PRIMARY_DARK },
+    h6: { ...tema.typography?.h6, color: TEXT_PRIMARY_DARK },
+    subtitle1: { ...tema.typography?.subtitle1, color: TEXT_SECONDARY_DARK },
+    subtitle2: { ...tema.typography?.subtitle2, color: TEXT_SECONDARY_DARK },
+    caption: { ...tema.typography?.caption, color: TEXT_SECONDARY_DARK },
+    overline: { ...tema.typography?.overline, color: TEXT_SECONDARY_DARK },
+  },
   components: {
     ...tema.components,
+    // Labels enfocados legibles: en oscuro el azul hardcodeado del tema claro no contrasta.
+    MuiInputLabel: {
+      ...tema.components?.MuiInputLabel,
+      styleOverrides: {
+        ...tema.components?.MuiInputLabel?.styleOverrides,
+        root: {
+          fontWeight: 500,
+          '&.Mui-focused': { color: LIONS_GOLD },
+        },
+      },
+    },
+    MuiDialogTitle: {
+      styleOverrides: {
+        root: {
+          fontWeight: 700,
+          fontSize: '1.25rem',
+          color: TEXT_PRIMARY_DARK,
+          padding: '24px 28px 8px',
+        },
+      },
+    },
     MuiCard: {
       ...tema.components?.MuiCard,
       styleOverrides: {

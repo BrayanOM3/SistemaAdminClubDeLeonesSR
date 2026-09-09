@@ -20,7 +20,7 @@ public class RepositorioBase<T> : IRepositorio<T> where T : class
         return await _dbSet.FindAsync(new object[] { id }, ct);
     }
 
-    public async Task<IReadOnlyList<T>> ObtenerTodosAsync(CancellationToken ct = default)
+    public virtual async Task<IReadOnlyList<T>> ObtenerTodosAsync(CancellationToken ct = default)
     {
         return await _dbSet.ToListAsync(ct);
     }

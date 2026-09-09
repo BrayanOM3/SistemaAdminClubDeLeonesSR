@@ -333,7 +333,7 @@ export function LayoutPrincipal({ children }: LayoutPrincipalProps) {
               transition: 'background-color 0.2s ease, box-shadow 0.2s ease',
               '&:focus-within': {
                 backgroundColor: esOscuro ? 'rgba(255,255,255,0.12)' : '#FFFFFF',
-                boxShadow: '0 0 0 3px rgba(0, 51, 141, 0.12)',
+                boxShadow: esOscuro ? '0 0 0 3px rgba(253, 185, 19, 0.18)' : '0 0 0 3px rgba(0, 51, 141, 0.12)',
               },
             }}
           >
@@ -399,6 +399,8 @@ export function LayoutPrincipal({ children }: LayoutPrincipalProps) {
           minWidth: 0,
           position: 'relative',
           zIndex: 1,
+          maxWidth: '1400px',
+          mx: 'auto',
           m: { xs: 1, sm: 1.5, md: 2.5 },
           mt: { xs: '72px', md: '88px' },
           p: { xs: 2, sm: 2.5, md: 3.5 },

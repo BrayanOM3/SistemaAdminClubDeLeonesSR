@@ -31,6 +31,10 @@ clienteAxios.interceptors.request.use((config) => {
 
 clienteAxios.interceptors.response.use(
   (response) => {
+    // No transformar respuestas binarias (ej. descarga de archivos .xlsx): un Blob
+    // no debe pasar por aCamelCase porque perdería el contenido binario.
+    if (response.data instanceof Blob) return response;
+
     // Transformar datos de entrada a camelCase para el frontend
     try {
       if (response.data && typeof response.data === 'object') {

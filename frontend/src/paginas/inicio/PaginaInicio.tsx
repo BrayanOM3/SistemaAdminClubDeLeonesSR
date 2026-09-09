@@ -9,6 +9,7 @@ import {
   Chip,
   Skeleton,
   Divider,
+  useTheme,
 } from '@mui/material';
 import {
   People,
@@ -46,6 +47,27 @@ const tarjetasResumen = [
 
 const nombresMeses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
+// Colores de acento más claros para leer los números KPI sobre el panel oscuro.
+const acentoOscuro: Record<string, string> = {
+  '#00338D': '#7FB2F5',
+  '#2D6BE0': '#8FB6FF',
+  '#C89211': '#E0B84F',
+  '#FDB913': '#FFD75E',
+  '#00838F': '#35BEC9',
+  '#6A1B9A': '#B77BE0',
+};
+
+/** Abrevia montos grandes para que quepan en la tarjeta KPI (ej. "₡ 19,5 M"). El valor completo se muestra en tooltip. */
+function formatoMonedaCorto(valor: number): string {
+  if (valor >= 1_000_000) {
+    return `₡ ${(valor / 1_000_000).toLocaleString('es-CR', { maximumFractionDigits: 1 })} M`;
+  }
+  if (valor >= 1_000) {
+    return `₡ ${(valor / 1_000).toLocaleString('es-CR', { maximumFractionDigits: 1 })} K`;
+  }
+  return valor === 0 ? '₡ 0' : formatoMoneda(valor);
+}
+
 function TarjetaEstadistica({
   titulo,
   icono,
@@ -53,6 +75,7 @@ function TarjetaEstadistica({
   valor,
   subtitulo,
   cargando,
+  valorCompleto,
 }: {
   titulo: string;
   icono: React.ReactNode;
@@ -60,7 +83,13 @@ function TarjetaEstadistica({
   valor: number | string;
   subtitulo: string;
   cargando: boolean;
+  /** Valor completo para el tooltip cuando el mostrado está abreviado (ej. montos grandes). */
+  valorCompleto?: string;
 }) {
+  const theme = useTheme();
+  const oscuro = theme.palette.mode === 'dark';
+  const colorMostrado = oscuro ? acentoOscuro[color] || color : color;
+
   if (cargando) {
     return (
       <Card sx={{ height: '100%' }}>
@@ -82,19 +111,30 @@ function TarjetaEstadistica({
     >
       <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 1 }}>
         <Box sx={{ minWidth: 0 }}>
+          {/* Etiqueta con altura reservada (2 líneas) para que el número quede alineado
+              entre las 6 tarjetas aunque el texto ocupe una o dos líneas. */}
           <Typography
             variant="overline"
-            sx={{ fontSize: '0.68rem', letterSpacing: '0.06em', color: 'text.secondary' }}
+            sx={{
+              display: 'block',
+              height: 26,
+              lineHeight: '13px',
+              overflow: 'hidden',
+              fontSize: '0.62rem',
+              letterSpacing: '0.045em',
+              color: 'text.secondary',
+            }}
           >
             {titulo}
           </Typography>
           <Typography
+            title={valorCompleto}
             sx={{
               fontWeight: 800,
-              fontSize: '1.65rem',
+              fontSize: { xs: '1.55rem', lg: '1.6rem', xl: '1.3rem' },
               lineHeight: 1.15,
-              color,
-              mt: 0.5,
+              color: colorMostrado,
+              mt: 0.75,
               mb: 0.25,
               whiteSpace: 'nowrap',
               overflow: 'hidden',
@@ -116,8 +156,8 @@ function TarjetaEstadistica({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: `${color}1C`,
-            color,
+            backgroundColor: oscuro ? `${colorMostrado}26` : `${color}1C`,
+            color: colorMostrado,
           }}
         >
           {icono}
@@ -143,7 +183,11 @@ export function PaginaInicio() {
     { valor: beneficiarios?.length || 0, cargando: cargandoBeneficiarios },
     { valor: voluntarios?.length || 0, cargando: cargandoVoluntarios },
     { valor: campanas?.length || 0, cargando: cargandoCampanas },
-    { valor: formatoMoneda(totalDonaciones), cargando: cargandoDonaciones },
+    {
+      valor: formatoMonedaCorto(totalDonaciones),
+      cargando: cargandoDonaciones,
+      valorCompleto: formatoMoneda(totalDonaciones),
+    },
     { valor: ayudas?.length || 0, cargando: cargandoAyudas },
     { valor: actividades?.length || 0, cargando: cargandoActividades },
   ];
@@ -225,6 +269,7 @@ export function PaginaInicio() {
               valor={datosTarjetas[index].valor}
               subtitulo={tarjeta.titulo === 'Recaudado' ? `${donaciones?.length || 0} donaciones` : tarjeta.subtitulo}
               cargando={datosTarjetas[index].cargando}
+              valorCompleto={datosTarjetas[index].valorCompleto}
             />
           </Grid>
         ))}
@@ -473,7 +518,15 @@ export function PaginaInicio() {
         </Grid>
 
         <Grid size={{ xs: 12, lg: 5 }}>
-          <Card sx={{ height: '100%' }}>
+          {/* Borde sutil en modo oscuro para que el panel se distinga como superficie elevada. */}
+          <Card
+            sx={(theme) => ({
+              height: '100%',
+              ...(theme.palette.mode === 'dark' && {
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+              }),
+            })}
+          >
             <CardContent>
               <Box sx={{ mb: 2 }}>
                 <Typography variant="h6" sx={{ fontWeight: 700 }}>Campañas activas</Typography>
@@ -494,10 +547,14 @@ export function PaginaInicio() {
                       mb: 1.25,
                       p: 1.5,
                       borderRadius: '14px',
-                      backgroundColor: 'rgba(15, 36, 71, 0.03)',
+                      backgroundColor: (theme) =>
+                        theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(15, 36, 71, 0.03)',
+                      border: (theme) =>
+                        theme.palette.mode === 'dark' ? '1px solid rgba(255, 255, 255, 0.06)' : '1px solid transparent',
                       transition: 'background-color 0.15s ease-in-out, transform 0.15s ease-in-out',
                       '&:hover': {
-                        backgroundColor: 'rgba(0, 51, 141, 0.05)',
+                        backgroundColor: (theme) =>
+                          theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.09)' : 'rgba(0, 51, 141, 0.05)',
                         transform: 'translateX(2px)',
                       },
                     }}
@@ -506,7 +563,19 @@ export function PaginaInicio() {
                       <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: '0.95rem' }}>
                         {campana.nombre}
                       </Typography>
-                      <Chip size="small" label="Activa" color="success" sx={{ bgcolor: 'rgba(46,125,50,0.12)', color: '#1E7A26', fontWeight: 600 }} />
+                      <Chip
+                        size="small"
+                        label="Activa"
+                        color="success"
+                        sx={(theme) => {
+                          const oscuro = theme.palette.mode === 'dark';
+                          return {
+                            backgroundColor: oscuro ? 'rgba(96, 173, 94, 0.20)' : 'rgba(46,125,50,0.12)',
+                            color: oscuro ? '#7BC47C' : '#1E7A26',
+                            fontWeight: 600,
+                          };
+                        }}
+                      />
                     </Box>
                     <Typography variant="body2" color="text.secondary">
                       {formatoFechaCorta(campana.fechaInicio)}
@@ -542,10 +611,14 @@ export function PaginaInicio() {
                       mb: 1.25,
                       p: 1.5,
                       borderRadius: '14px',
-                      backgroundColor: 'rgba(15, 36, 71, 0.03)',
+                      backgroundColor: (theme) =>
+                        theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(15, 36, 71, 0.03)',
+                      border: (theme) =>
+                        theme.palette.mode === 'dark' ? '1px solid rgba(255, 255, 255, 0.06)' : '1px solid transparent',
                       transition: 'background-color 0.15s ease-in-out, transform 0.15s ease-in-out',
                       '&:hover': {
-                        backgroundColor: 'rgba(0, 51, 141, 0.05)',
+                        backgroundColor: (theme) =>
+                          theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.09)' : 'rgba(0, 51, 141, 0.05)',
                         transform: 'translateX(2px)',
                       },
                     }}

@@ -37,5 +37,7 @@ export const endpoints = {
     donaciones: '/reportes/donaciones',
     campanas: '/reportes/campanas',
     voluntarios: '/reportes/voluntarios',
+    ayudasSociales: '/reportes/ayudas-sociales',
+    actividades: '/reportes/actividades',
   },
 } as const;

@@ -249,7 +249,8 @@ export function TablaDatos<T>({
                         width: 64,
                         height: 64,
                         borderRadius: '50%',
-                        backgroundColor: 'rgba(0, 51, 141, 0.04)',
+                        backgroundColor: (theme) =>
+                          theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.07)' : 'rgba(0, 51, 141, 0.04)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -299,7 +300,8 @@ export function TablaDatos<T>({
                           py: 0.25,
                           borderRadius: 2,
                           '&:hover': {
-                            backgroundColor: 'rgba(0, 51, 141, 0.04)',
+                            backgroundColor: (theme) =>
+                              theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.07)' : 'rgba(0, 51, 141, 0.04)',
                           },
                         }}
                       >

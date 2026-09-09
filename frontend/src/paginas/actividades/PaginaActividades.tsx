@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { Add, Edit, Delete, Visibility } from '@mui/icons-material';
 import { useActividades, useCrearActividad, useActualizarActividad, useEliminarActividad } from '../../hooks/useActividades';
 import { TablaDatos, formateadores } from '../../componentes/TablaDatos';

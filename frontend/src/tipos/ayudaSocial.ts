@@ -1,12 +1,15 @@
 export interface AyudaSocialDto {
   id: string;
   beneficiarioId: string;
+  nombreBeneficiario: string;
   tipo: TipoAyuda;
   descripcion: string;
   monto?: number;
   fechaEntrega: string;
   campanaId?: string;
+  nombreCampana?: string;
   voluntarioId?: string;
+  nombreVoluntario?: string;
   estado: EstadoAyuda;
 }
 

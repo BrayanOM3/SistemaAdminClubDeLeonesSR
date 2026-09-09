@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, ReactElement } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -13,7 +13,7 @@ import type { TransitionProps } from '@mui/material/transitions';
 import { forwardRef } from 'react';
 
 const TransicionSlide = forwardRef(function TransicionSlide(
-  props: TransitionProps & { children: ReactNode },
+  props: TransitionProps & { children: ReactElement },
   ref: React.Ref<unknown>,
 ) {
   return <Slide direction="up" ref={ref} {...props} timeout={{ enter: 250, exit: 200 }} />;
@@ -45,7 +45,7 @@ export function DialogoFormulario({
       maxWidth={ancho === 'full' ? false : ancho}
       fullWidth={ancho !== 'full'}
       disableRestoreFocus
-      TransitionComponent={TransicionSlide}
+      slots={{ transition: TransicionSlide }}
       sx={{
         '& .MuiDialog-paper': {
           maxWidth: ancho === 'full' ? '95vw' : undefined,

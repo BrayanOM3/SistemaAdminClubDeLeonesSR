@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { Add, Edit, Delete, Visibility } from '@mui/icons-material';
 import { useAyudasSociales, useCrearAyudaSocial, useActualizarAyudaSocial, useEliminarAyudaSocial } from '../../hooks/useAyudasSociales';
 import { TablaDatos, formateadores } from '../../componentes/TablaDatos';
@@ -23,14 +23,14 @@ export function PaginaAyudasSociales() {
   const [eliminarConfirmar, setEliminarConfirmar] = useState<AyudaSocialDto | null>(null);
 
   const columnas = [
-    { campo: 'beneficiarioId', encabezado: 'Beneficiario', ordenable: false, formatear: formateadores.guidCorto },
+    { campo: 'nombreBeneficiario', encabezado: 'Beneficiario', ordenable: true },
     { campo: 'tipo', encabezado: 'Tipo', ordenable: true, formatear: formateadores.estado },
     { campo: 'descripcion', encabezado: 'Descripción', ordenable: false },
     { campo: 'monto', encabezado: 'Monto', ordenable: true, formatear: formateadores.moneda },
     { campo: 'fechaEntrega', encabezado: 'Fecha entrega', ordenable: true, formatear: formateadores.fecha },
     { campo: 'estado', encabezado: 'Estado', ordenable: true, formatear: formateadores.estado },
-    { campo: 'campanaId', encabezado: 'Campaña', ordenable: false, formatear: formateadores.guidCorto },
-    { campo: 'voluntarioId', encabezado: 'Voluntario', ordenable: false, formatear: formateadores.guidCorto },
+    { campo: 'nombreCampana', encabezado: 'Campaña', ordenable: true },
+    { campo: 'nombreVoluntario', encabezado: 'Voluntario', ordenable: true },
   ];
 
   const acciones = [

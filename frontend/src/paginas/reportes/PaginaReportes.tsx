@@ -9,6 +9,9 @@ import { useAyudasSociales } from '../../hooks/useAyudasSociales';
 import { useActividades } from '../../hooks/useActividades';
 import { formatoMoneda } from '../../utilidades/formateadores';
 import { EncabezadoPagina } from '../../componentes/EncabezadoPagina';
+import { TablaDatos } from '../../componentes/TablaDatos';
+import { descargarArchivo } from '../../utilidades/descargaArchivos';
+import { endpoints } from '../../api/constantesEndpoints';
 
 type TipoReporte = 'beneficiarios' | 'donaciones' | 'campanas' | 'voluntarios' | 'ayudasSociales' | 'actividades';
 
@@ -99,7 +102,7 @@ export function PaginaReportes() {
         ];
       case 'ayudasSociales':
         return [
-          { key: 'beneficiarioId', label: 'Beneficiario ID' },
+          { key: 'nombreBeneficiario', label: 'Beneficiario' },
           { key: 'tipo', label: 'Tipo' },
           { key: 'descripcion', label: 'Descripción' },
           { key: 'monto', label: 'Monto' },
@@ -133,18 +136,27 @@ export function PaginaReportes() {
     return String(valor);
   };
 
-  const exportarCSV = () => {
-    if (!datosActuales.length) return;
-    const headers = columnas.map((c) => c.label).join(',');
-    const rows = datosActuales.map((fila) =>
-      columnas.map((c) => `"${String(formatearValor(fila as unknown as Record<string, unknown>, c.key)).replace(/"/g, '""')}"`).join(',')
-    );
-    const csv = [headers, ...rows].join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `reporte-${tipoReporte}-${new Date().toISOString().split('T')[0]}.csv`;
-    link.click();
+  const urlReportePorTipo: Record<TipoReporte, string> = {
+    beneficiarios: endpoints.reportes.beneficiarios,
+    donaciones: endpoints.reportes.donaciones,
+    campanas: endpoints.reportes.campanas,
+    voluntarios: endpoints.reportes.voluntarios,
+    ayudasSociales: endpoints.reportes.ayudasSociales,
+    actividades: endpoints.reportes.actividades,
+  };
+
+  const exportarExcel = async () => {
+    if (!datosActuales.length || exportando) return;
+    setExportando(true);
+    try {
+      const fecha = new Date().toISOString().split('T')[0];
+      await descargarArchivo(urlReportePorTipo[tipoReporte], `reporte-${tipoReporte}-${fecha}.xlsx`);
+    } catch (error) {
+      console.error('Error al generar el reporte Excel:', error);
+      alert('No se pudo generar el archivo de Excel. Verifique que el servidor esté disponible.');
+    } finally {
+      setExportando(false);
+    }
   };
 
   const exportarPDF = async () => {
@@ -185,11 +197,11 @@ export function PaginaReportes() {
     <Box>
       <EncabezadoPagina
         titulo="Reportes y Exportación"
-        descripcion="Generar reportes en CSV o PDF"
+        descripcion="Generar reportes en Excel o PDF"
         acciones={
           <>
-            <Button variant="outlined" startIcon={<TableChart />} onClick={exportarCSV} disabled={!datosActuales.length || cargandoActual}>
-              Exportar CSV
+            <Button variant="outlined" startIcon={<TableChart />} onClick={exportarExcel} disabled={!datosActuales.length || cargandoActual || exportando}>
+              {exportando ? 'Generando Excel...' : 'Exportar Excel'}
             </Button>
             <Button variant="outlined" startIcon={<PictureAsPdf />} onClick={exportarPDF} disabled={!datosActuales.length || cargandoActual || exportando}>
               {exportando ? 'Generando PDF...' : 'Exportar PDF'}
@@ -218,44 +230,20 @@ export function PaginaReportes() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardContent>
-          {cargandoActual ? (
-            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
-              Cargando datos...
-            </Typography>
-          ) : datosActuales.length === 0 ? (
-            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
-              No hay datos para mostrar en este reporte
-            </Typography>
-          ) : (
-            <Box sx={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr style={{ backgroundColor: '#F5F5F5' }}>
-                    {columnas.map((col) => (
-                      <th key={col.key} style={{ padding: '8px 12px', textAlign: 'left', borderBottom: '1px solid #E0E0E0', fontWeight: 600 }}>
-                        {col.label}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {datosActuales.map((fila, index) => (
-                    <tr key={index} style={{ backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#FAFAFA' }}>
-                      {columnas.map((col) => (
-                        <td key={col.key} style={{ padding: '8px 12px', borderBottom: '1px solid #F0F0F0' }}>
-                          {formatearValor(fila as unknown as Record<string, unknown>, col.key)}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </Box>
-          )}
-        </CardContent>
-      </Card>
+      {/* Vista previa con TablaDatos (theme-aware): búsqueda, orden y paginación, legible en claro y oscuro */}
+      <TablaDatos
+        datos={datosActuales}
+        columnas={columnas.map((col) => ({
+          campo: col.key,
+          encabezado: col.label,
+          ordenable: true,
+          formatear: (_valor, fila) =>
+            formatearValor(fila as unknown as Record<string, unknown>, col.key),
+        }))}
+        claveUnica="id"
+        cargando={cargandoActual}
+        vacioMensaje="No hay datos para mostrar en este reporte"
+      />
 
       <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block' }}>
         Total de registros: {datosActuales.length}
