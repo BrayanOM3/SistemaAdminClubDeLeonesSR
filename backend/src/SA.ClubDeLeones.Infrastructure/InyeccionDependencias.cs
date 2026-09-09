@@ -44,6 +44,7 @@ public static class InyeccionDependencias
         services.AddScoped<IVoluntarioServicio, VoluntarioServicio>();
         services.AddScoped<IAyudaSocialServicio, AyudaSocialServicio>();
         services.AddScoped<IActividadServicio, ActividadServicio>();
+        services.AddScoped<ICalendarioServicio, CalendarioServicio>();
 
         services.Configure<JwtOpciones>(configuration.GetSection("Jwt"));
 
