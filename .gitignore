@@ -36,3 +36,6 @@ backend/migration.log
 *.env.*.local
 appsettings.Development.json
 **/appsettings.Production.json
+
+# Reportes de prueba exportados (se regeneran al correr exportaciones)
+reporte-*.xlsx
