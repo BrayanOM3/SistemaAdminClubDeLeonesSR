@@ -5,6 +5,7 @@ import { useActividades, useCrearActividad, useActualizarActividad, useEliminarA
 import { TablaDatos, formateadores } from '../../componentes/TablaDatos';
 import { DialogoFormulario } from '../../componentes/DialogoFormulario';
 import { DialogoConfirmacion } from '../../componentes/DialogoConfirmacion';
+import { EncabezadoPagina } from '../../componentes/EncabezadoPagina';
 import { FormularioActividad } from './FormularioActividad';
 import type { ActividadDto, CrearActividadDto, ActualizarActividadDto } from '../../tipos/actividad';
 import { useStoreUI } from '../../store/storeUi';
@@ -86,19 +87,15 @@ export function PaginaActividades() {
 
   return (
     <Box>
-      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
-        <Box>
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 600, mb: 0.5 }}>
-            Actividades
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Gestión de actividades y eventos
-          </Typography>
-        </Box>
-        <Button variant="contained" startIcon={<Add />} onClick={abrirNuevo} disabled={creando}>
-          Nueva actividad
-        </Button>
-      </Box>
+      <EncabezadoPagina
+        titulo="Actividades"
+        descripcion="Gestión de actividades y eventos"
+        acciones={
+          <Button variant="contained" startIcon={<Add />} onClick={abrirNuevo} disabled={creando}>
+            Nueva actividad
+          </Button>
+        }
+      />
 
       <TablaDatos<ActividadDto>
         datos={actividades || []}

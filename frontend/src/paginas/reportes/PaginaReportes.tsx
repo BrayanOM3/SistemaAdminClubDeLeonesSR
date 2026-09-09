@@ -8,6 +8,7 @@ import { useVoluntarios } from '../../hooks/useVoluntarios';
 import { useAyudasSociales } from '../../hooks/useAyudasSociales';
 import { useActividades } from '../../hooks/useActividades';
 import { formatoMoneda } from '../../utilidades/formateadores';
+import { EncabezadoPagina } from '../../componentes/EncabezadoPagina';
 
 type TipoReporte = 'beneficiarios' | 'donaciones' | 'campanas' | 'voluntarios' | 'ayudasSociales' | 'actividades';
 
@@ -182,24 +183,20 @@ export function PaginaReportes() {
 
   return (
     <Box>
-      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
-        <Box>
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 600, mb: 0.5 }}>
-            Reportes y Exportación
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Generar reportes en CSV o PDF
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <Button variant="outlined" startIcon={<TableChart />} onClick={exportarCSV} disabled={!datosActuales.length || cargandoActual}>
-            Exportar CSV
-          </Button>
-          <Button variant="outlined" startIcon={<PictureAsPdf />} onClick={exportarPDF} disabled={!datosActuales.length || cargandoActual || exportando}>
-            {exportando ? 'Generando PDF...' : 'Exportar PDF'}
-          </Button>
-        </Box>
-      </Box>
+      <EncabezadoPagina
+        titulo="Reportes y Exportación"
+        descripcion="Generar reportes en CSV o PDF"
+        acciones={
+          <>
+            <Button variant="outlined" startIcon={<TableChart />} onClick={exportarCSV} disabled={!datosActuales.length || cargandoActual}>
+              Exportar CSV
+            </Button>
+            <Button variant="outlined" startIcon={<PictureAsPdf />} onClick={exportarPDF} disabled={!datosActuales.length || cargandoActual || exportando}>
+              {exportando ? 'Generando PDF...' : 'Exportar PDF'}
+            </Button>
+          </>
+        }
+      />
 
       <Card sx={{ mb: 3 }}>
         <CardContent>

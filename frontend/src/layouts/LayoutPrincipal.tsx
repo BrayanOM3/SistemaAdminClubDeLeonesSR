@@ -15,6 +15,7 @@ import {
   Menu,
   MenuItem,
   Divider,
+  InputBase,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
@@ -34,6 +35,8 @@ import {
   DarkMode,
   LightMode,
   Notifications,
+  Search,
+  LiveHelp,
 } from '@mui/icons-material';
 import { NavLink } from 'react-router-dom';
 import { useStoreSesion } from '../store/storeSesion';
@@ -57,30 +60,21 @@ interface LayoutPrincipalProps {
 
 export function LayoutPrincipal({ children }: LayoutPrincipalProps) {
   const theme = useTheme();
+  const esOscuro = theme.palette.mode === 'dark';
   const esMovil = useMediaQuery(theme.breakpoints.down('md'));
   const { nombreUsuario, nombreVoluntario, cerrarSesion } = useStoreSesion();
-  const { menuAbierto, abrirMenu, cerrarMenu, temaOscuro, alternarTema, notificaciones } = useStoreUI();
+  const { menuAbierto, abrirMenu, cerrarMenu, temaOscuro, alternarTema, notificaciones, agregarNotificacion } = useStoreUI();
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [anchorElNotif, setAnchorElNotif] = React.useState<HTMLElement | null>(null);
 
-  const manejarClicMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const manejarCerrarMenu = () => {
-    setAnchorEl(null);
-  };
-
-  const manejarClicNotificaciones = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNotif(event.currentTarget);
-  };
-
+  const manejarClicMenu = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
+  const manejarCerrarMenu = () => setAnchorEl(null);
+  const manejarClicNotificaciones = (event: React.MouseEvent<HTMLElement>) => setAnchorElNotif(event.currentTarget);
   const manejarCerrarSesion = () => {
     cerrarSesion();
     manejarCerrarMenu();
   };
-
   const alternarTemaConIcono = () => {
     alternarTema();
     manejarCerrarMenu();
@@ -130,15 +124,55 @@ export function LayoutPrincipal({ children }: LayoutPrincipalProps) {
     </Menu>
   );
 
+  // Tarjeta CTA al final del sidebar (estilo Soft UI "¿Necesita ayuda?")
+  const tarjetaCTA = (
+    <Box
+      sx={{
+        mx: 2,
+        mb: 1.5,
+        p: 2,
+        borderRadius: '18px',
+        textAlign: 'center',
+        color: '#FFFFFF',
+        background: `linear-gradient(150deg, ${esOscuro ? '#12255C' : '#00338D'} 0%, ${esOscuro ? '#1A4FA0' : '#1A4FA0'} 55%, ${esOscuro ? '#2D6BE0' : '#1550B8'} 100%)`,
+        boxShadow: '0 12px 26px -12px rgba(0, 51, 141, 0.55)',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      {/* Decoración: círculo dorado difuso */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: -24,
+          right: -18,
+          width: 84,
+          height: 84,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(253, 185, 19, 0.45) 0%, transparent 70%)',
+          pointerEvents: 'none',
+        }}
+      />
+      <LiveHelp sx={{ fontSize: 30, mb: 0.75, opacity: 0.95 }} />
+      <Typography sx={{ fontWeight: 700, fontSize: '0.9375rem', mb: 0.5 }}>
+        ¿Necesita ayuda?
+      </Typography>
+      <Typography sx={{ fontSize: '0.75rem', opacity: 0.85, mb: 1.25 }}>
+        Soporte del Club de Leones
+      </Typography>
+      <ButtonBlanco onClic={() => agregarNotificacion({ tipo: 'info', mensaje: 'Comuníquese con la mesa directiva del Club para asistencia.' })} />
+    </Box>
+  );
+
   const drawer = (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <Box
         sx={{
-          p: 2,
+          p: 2.25,
+          px: 2,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          background: 'linear-gradient(180deg, rgba(0, 51, 141, 0.03) 0%, transparent 100%)',
           borderBottom: 1,
           borderColor: 'divider',
         }}
@@ -148,18 +182,21 @@ export function LayoutPrincipal({ children }: LayoutPrincipalProps) {
           src={logoLeones}
           alt="Club de Leones de San Ramón"
           sx={{
-            width: 80,
-            height: 80,
+            width: 76,
+            height: 76,
             objectFit: 'contain',
             mb: 1,
-            filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))',
+            borderRadius: '18px',
+            backgroundColor: 'rgba(0, 51, 141, 0.04)',
+            p: 0.5,
+            boxShadow: '0 6px 14px -6px rgba(0, 51, 141, 0.25)',
           }}
         />
         <Typography
           variant="h6"
           sx={{
             fontWeight: 700,
-            color: 'primary.main',
+            color: 'text.primary',
             fontSize: '0.9375rem',
             letterSpacing: '0.02em',
             textAlign: 'center',
@@ -181,23 +218,16 @@ export function LayoutPrincipal({ children }: LayoutPrincipalProps) {
           San Ramón, Alajuela
         </Typography>
       </Box>
-      <Divider />
-      <List sx={{ flex: 1, px: 1, py: 1 }}>
+
+      <List sx={{ flex: 1, px: 1, py: 1.5, overflowY: 'auto' }}>
         {itemsMenu.map((item) => (
           <NavLink
             key={item.ruta}
             to={item.ruta}
+            style={{ textDecoration: 'none', color: 'inherit' }}
             children={({ isActive }) => (
-              <ListItemButton
-                sx={{
-                  textDecoration: 'none',
-                  color: isActive ? 'primary.main' : 'inherit',
-                  backgroundColor: isActive ? 'primary.light' + '15' : 'transparent',
-                  borderRadius: 2,
-                  '&:hover': { backgroundColor: 'action.hover' },
-                }}
-              >
-                <ListItemIcon sx={{ minWidth: 40, color: isActive ? 'primary.main' : 'inherit' }}>
+              <ListItemButton selected={isActive}>
+                <ListItemIcon sx={{ minWidth: 40 }}>
                   {item.icono}
                 </ListItemIcon>
                 <ListItemText primary={item.etiqueta} />
@@ -206,7 +236,9 @@ export function LayoutPrincipal({ children }: LayoutPrincipalProps) {
           />
         ))}
       </List>
-      <Divider sx={{ borderColor: 'rgba(0, 51, 141, 0.08)' }} />
+
+      <Divider sx={{ borderColor: 'divider' }} />
+      {tarjetaCTA}
       <Box sx={{ p: 1.5, textAlign: 'center' }}>
         <Typography
           variant="caption"
@@ -224,31 +256,95 @@ export function LayoutPrincipal({ children }: LayoutPrincipalProps) {
   );
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box sx={{ position: 'relative', display: 'flex', minHeight: '100vh', overflow: 'hidden', backgroundColor: 'background.default' }}>
+      {/* ── Formas decorativas (blobs) detrás del panel ── */}
+      <Box
+        className="blob-decorativo blob-flotar"
+        sx={{
+          top: -90,
+          right: -70,
+          width: { xs: 260, md: 400 },
+          height: { xs: 260, md: 400 },
+          background: 'radial-gradient(circle, rgba(253, 185, 19, 0.30) 0%, transparent 70%)',
+        }}
+      />
+      <Box
+        className="blob-decorativo blob-flotar-lento"
+        sx={{
+          bottom: 60,
+          left: '26%',
+          width: { xs: 300, md: 460 },
+          height: { xs: 300, md: 460 },
+          background: 'radial-gradient(circle, rgba(0, 51, 141, 0.16) 0%, transparent 70%)',
+        }}
+      />
+      <Box
+        className="blob-decorativo blob-flotar"
+        sx={{
+          top: '40%',
+          right: '8%',
+          width: 190,
+          height: 190,
+          background: esOscuro
+            ? 'radial-gradient(circle, rgba(253, 185, 19, 0.16) 0%, transparent 70%)'
+            : 'radial-gradient(circle, rgba(0, 51, 141, 0.10) 0%, transparent 70%)',
+        }}
+      />
+
       <AppBar
         position="fixed"
         elevation={0}
         sx={{
           width: { md: `calc(100% - 256px)` },
           ml: { md: '256px' },
-          backgroundColor: 'background.paper',
-          borderBottom: '1px solid rgba(0, 51, 141, 0.06)',
-          backdropFilter: 'blur(8px)',
+          backgroundColor: 'transparent',
+          backdropFilter: 'blur(10px)',
+          borderBottom: 'none',
+          boxShadow: 'none',
         }}
       >
-        <Toolbar>
+        <Toolbar sx={{ gap: { xs: 0.5, sm: 1 }, minHeight: { xs: '64px', md: '72px' } }}>
           {esMovil && (
             <IconButton
               color="inherit"
               edge="start"
               onClick={abrirMenu}
-              sx={{ mr: 2, ...theme.mixins.toolbar }}
               aria-label="Abrir menú"
+              sx={{ mr: 0.5 }}
             >
               <MenuIcon />
             </IconButton>
           )}
-          <Box sx={{ flexGrow: 1 }} />
+
+          {/* Barra de búsqueda (redondeada, fondo gris claro) */}
+          <Box
+            sx={{
+              flex: 1,
+              maxWidth: { sm: 360 },
+              display: 'flex',
+              alignItems: 'center',
+              px: 1.5,
+              py: 0.75,
+              ml: { sm: 1 },
+              borderRadius: '999px',
+              backgroundColor: esOscuro ? 'rgba(255, 255, 255, 0.07)' : 'rgba(15, 36, 71, 0.045)',
+              border: 1,
+              borderColor: 'transparent',
+              transition: 'background-color 0.2s ease, box-shadow 0.2s ease',
+              '&:focus-within': {
+                backgroundColor: esOscuro ? 'rgba(255,255,255,0.12)' : '#FFFFFF',
+                boxShadow: '0 0 0 3px rgba(0, 51, 141, 0.12)',
+              },
+            }}
+          >
+            <Search sx={{ color: 'text.secondary', fontSize: 20, mr: 1 }} />
+            <InputBase
+              placeholder="Buscar..."
+              fullWidth
+              sx={{ fontSize: '0.875rem' }}
+            />
+          </Box>
+
           <IconButton onClick={manejarClicNotificaciones} aria-label="Notificaciones">
             <Notifications />
           </IconButton>
@@ -258,15 +354,13 @@ export function LayoutPrincipal({ children }: LayoutPrincipalProps) {
           <IconButton onClick={manejarClicMenu} aria-label="Menú usuario">
             <Avatar
               sx={{
-                width: 36,
-                height: 36,
+                width: 38,
+                height: 38,
                 bgcolor: 'primary.main',
                 fontSize: '0.875rem',
                 fontWeight: 600,
-                border: '2px solid rgba(253, 185, 19, 0.3)',
-                '&:hover': {
-                  borderColor: 'secondary.main',
-                },
+                border: '2px solid rgba(253, 185, 19, 0.35)',
+                boxShadow: '0 6px 12px -6px rgba(0, 51, 141, 0.5)',
               }}
             >
               {nombreVoluntario?.[0] || nombreUsuario?.[0] || 'U'}
@@ -288,7 +382,8 @@ export function LayoutPrincipal({ children }: LayoutPrincipalProps) {
             width: 256,
             boxSizing: 'border-box',
             backgroundColor: 'background.paper',
-            borderRight: '1px solid rgba(0, 51, 141, 0.08)',
+            borderRight: 'none',
+            boxShadow: esOscuro ? 'none' : '0 0 30px rgba(15, 36, 71, 0.06)',
           },
         }}
         ModalProps={{ keepMounted: true }}
@@ -296,20 +391,60 @@ export function LayoutPrincipal({ children }: LayoutPrincipalProps) {
         {drawer}
       </Drawer>
 
+      {/* Panel principal blanco flotante */}
       <Box
         component="main"
         sx={{
           flexGrow: 1,
           minWidth: 0,
-          p: 3,
-          mt: 8,
-          minHeight: 'calc(100vh - 64px)',
-          backgroundColor: 'background.default',
+          position: 'relative',
+          zIndex: 1,
+          m: { xs: 1, sm: 1.5, md: 2.5 },
+          mt: { xs: '72px', md: '88px' },
+          p: { xs: 2, sm: 2.5, md: 3.5 },
+          borderRadius: { xs: '16px', sm: '20px', md: '26px' },
+          background: esOscuro
+            ? 'linear-gradient(180deg, #141B30 0%, #101731 100%)'
+            : 'linear-gradient(180deg, #FFFFFF 0%, #F7F9FD 100%)',
+          boxShadow: esOscuro
+            ? '0 8px 20px rgba(0, 0, 0, 0.3), 0 30px 64px -22px rgba(0, 0, 0, 0.55)'
+            : '0 6px 16px rgba(15, 36, 71, 0.05), 0 30px 60px -24px rgba(15, 36, 71, 0.28)',
+          minHeight: 'calc(100vh - 120px)',
         }}
       >
-        {children}
+        <Box className="fade-in" sx={{ height: '100%' }}>
+          {children}
+        </Box>
       </Box>
     </Box>
   );
 }
 
+// Botón blanco pequeño de la tarjeta CTA del sidebar
+function ButtonBlanco({ onClic }: { onClic: () => void }) {
+  return (
+    <button
+      onClick={onClic}
+      style={{
+        border: 'none',
+        cursor: 'pointer',
+        borderRadius: 999,
+        padding: '8px 18px',
+        fontWeight: 700,
+        fontSize: '0.8125rem',
+        background: '#FFFFFF',
+        color: '#00338D',
+        boxShadow: '0 6px 14px -6px rgba(0, 0, 0, 0.3)',
+        transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-1px)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'none';
+      }}
+    >
+      Conozca más
+    </button>
+  );
+}

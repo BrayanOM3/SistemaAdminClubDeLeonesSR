@@ -5,6 +5,7 @@ import { useDonaciones, useCrearDonacion, useActualizarDonacion, useEliminarDona
 import { TablaDatos, formateadores } from '../../componentes/TablaDatos';
 import { DialogoFormulario } from '../../componentes/DialogoFormulario';
 import { DialogoConfirmacion } from '../../componentes/DialogoConfirmacion';
+import { EncabezadoPagina } from '../../componentes/EncabezadoPagina';
 import { FormularioDonacion } from './FormularioDonacion';
 import type { DonacionDto, CrearDonacionDto, ActualizarDonacionDto } from '../../tipos/donacion';
 import { useStoreUI } from '../../store/storeUi';
@@ -88,19 +89,15 @@ export function PaginaDonaciones() {
 
   return (
     <Box>
-      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
-        <Box>
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 600, mb: 0.5 }}>
-            Donaciones
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Registro y gestión de donaciones
-          </Typography>
-        </Box>
-        <Button variant="contained" startIcon={<Add />} onClick={abrirNuevo} disabled={creando}>
-          Nueva donación
-        </Button>
-      </Box>
+      <EncabezadoPagina
+        titulo="Donaciones"
+        descripcion="Registro y gestión de donaciones"
+        acciones={
+          <Button variant="contained" startIcon={<Add />} onClick={abrirNuevo} disabled={creando}>
+            Nueva donación
+          </Button>
+        }
+      />
 
       <TablaDatos
         datos={donaciones || []}

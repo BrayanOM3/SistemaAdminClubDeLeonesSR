@@ -5,6 +5,7 @@ import { useAyudasSociales, useCrearAyudaSocial, useActualizarAyudaSocial, useEl
 import { TablaDatos, formateadores } from '../../componentes/TablaDatos';
 import { DialogoFormulario } from '../../componentes/DialogoFormulario';
 import { DialogoConfirmacion } from '../../componentes/DialogoConfirmacion';
+import { EncabezadoPagina } from '../../componentes/EncabezadoPagina';
 import { FormularioAyudaSocial } from './FormularioAyudaSocial';
 import type { AyudaSocialDto, CrearAyudaSocialDto, ActualizarAyudaSocialDto } from '../../tipos/ayudaSocial';
 import { useStoreUI } from '../../store/storeUi';
@@ -89,19 +90,15 @@ export function PaginaAyudasSociales() {
 
   return (
     <Box>
-      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
-        <Box>
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 600, mb: 0.5 }}>
-            Ayudas Sociales
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Registro y seguimiento de ayudas entregadas
-          </Typography>
-        </Box>
-        <Button variant="contained" startIcon={<Add />} onClick={abrirNuevo} disabled={creando}>
-          Nueva ayuda
-        </Button>
-      </Box>
+      <EncabezadoPagina
+        titulo="Ayudas Sociales"
+        descripcion="Registro y seguimiento de ayudas entregadas"
+        acciones={
+          <Button variant="contained" startIcon={<Add />} onClick={abrirNuevo} disabled={creando}>
+            Nueva ayuda
+          </Button>
+        }
+      />
 
       <TablaDatos
         datos={ayudas || []}

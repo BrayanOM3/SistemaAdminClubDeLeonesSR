@@ -5,6 +5,7 @@ import { useVoluntarios, useCrearVoluntario, useActualizarVoluntario, useElimina
 import { TablaDatos, formateadores } from '../../componentes/TablaDatos';
 import { DialogoFormulario } from '../../componentes/DialogoFormulario';
 import { DialogoConfirmacion } from '../../componentes/DialogoConfirmacion';
+import { EncabezadoPagina } from '../../componentes/EncabezadoPagina';
 import { FormularioVoluntario } from './FormularioVoluntario';
 import type { VoluntarioDto, CrearVoluntarioDto, ActualizarVoluntarioDto } from '../../tipos/voluntario';
 import { useStoreUI } from '../../store/storeUi';
@@ -88,19 +89,15 @@ export function PaginaVoluntarios() {
 
   return (
     <Box>
-      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
-        <Box>
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 600, mb: 0.5 }}>
-            Voluntarios
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Gestión de voluntarios del Club de Leones
-          </Typography>
-        </Box>
-        <Button variant="contained" startIcon={<Add />} onClick={abrirNuevo} disabled={creando}>
-          Nuevo voluntario
-        </Button>
-      </Box>
+      <EncabezadoPagina
+        titulo="Voluntarios"
+        descripcion="Gestión de voluntarios del Club de Leones"
+        acciones={
+          <Button variant="contained" startIcon={<Add />} onClick={abrirNuevo} disabled={creando}>
+            Nuevo voluntario
+          </Button>
+        }
+      />
 
       <TablaDatos
         datos={voluntarios || []}

@@ -5,6 +5,7 @@ import { useCampanas, useCrearCampana, useActualizarCampana, useEliminarCampana 
 import { TablaDatos, formateadores } from '../../componentes/TablaDatos';
 import { DialogoFormulario } from '../../componentes/DialogoFormulario';
 import { DialogoConfirmacion } from '../../componentes/DialogoConfirmacion';
+import { EncabezadoPagina } from '../../componentes/EncabezadoPagina';
 import { FormularioCampana } from './FormularioCampana';
 import type { CampanaDto, CrearCampanaDto, ActualizarCampanaDto } from '../../tipos/campana';
 import { useStoreUI } from '../../store/storeUi';
@@ -87,19 +88,15 @@ export function PaginaCampanas() {
 
   return (
     <Box>
-      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
-        <Box>
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 600, mb: 0.5 }}>
-            Campañas
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Gestión de campañas del Club de Leones
-          </Typography>
-        </Box>
-        <Button variant="contained" startIcon={<Add />} onClick={abrirNuevo} disabled={creando}>
-          Nueva campaña
-        </Button>
-      </Box>
+      <EncabezadoPagina
+        titulo="Campañas"
+        descripcion="Gestión de campañas del Club de Leones"
+        acciones={
+          <Button variant="contained" startIcon={<Add />} onClick={abrirNuevo} disabled={creando}>
+            Nueva campaña
+          </Button>
+        }
+      />
 
       <TablaDatos
         datos={campanas || []}
