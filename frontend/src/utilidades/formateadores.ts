@@ -1,20 +1,56 @@
 export function formatoFechaCorta(fecha: string | Date | undefined | null): string {
   if (!fecha) return '';
-  const d = typeof fecha === 'string' ? new Date(fecha) : fecha;
+  let d: Date;
+  if (typeof fecha === 'string') {
+    // Parsear 'yyyy-MM-dd' como fecha LOCAL (evita desface de zona horaria).
+    // Si viene con hora (ISO completo), usar new Date normal.
+    if (/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+      const [anio, mes, dia] = fecha.split('-').map(Number);
+      d = new Date(anio, mes - 1, dia);
+    } else {
+      d = new Date(fecha);
+    }
+  } else {
+    d = fecha;
+  }
   if (isNaN(d.getTime())) return '';
   return d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
 }
 
 export function formatoFechaLarga(fecha: string | Date | undefined | null): string {
   if (!fecha) return '';
-  const d = typeof fecha === 'string' ? new Date(fecha) : fecha;
+  let d: Date;
+  if (typeof fecha === 'string') {
+    // Parsear 'yyyy-MM-dd' como fecha LOCAL (evita desface de zona horaria).
+    // Si viene con hora (ISO completo), usar new Date normal.
+    if (/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+      const [anio, mes, dia] = fecha.split('-').map(Number);
+      d = new Date(anio, mes - 1, dia);
+    } else {
+      d = new Date(fecha);
+    }
+  } else {
+    d = fecha;
+  }
   if (isNaN(d.getTime())) return '';
   return d.toLocaleDateString('es-ES', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
 }
 
 export function formatoFechaHora(fecha: string | Date | undefined | null): string {
   if (!fecha) return '';
-  const d = typeof fecha === 'string' ? new Date(fecha) : fecha;
+  let d: Date;
+  if (typeof fecha === 'string') {
+    // Parsear 'yyyy-MM-dd' como fecha LOCAL (evita desface de zona horaria).
+    // Si viene con hora (ISO completo), usar new Date normal.
+    if (/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+      const [anio, mes, dia] = fecha.split('-').map(Number);
+      d = new Date(anio, mes - 1, dia);
+    } else {
+      d = new Date(fecha);
+    }
+  } else {
+    d = fecha;
+  }
   if (isNaN(d.getTime())) return '';
   return d.toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 }

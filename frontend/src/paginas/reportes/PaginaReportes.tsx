@@ -131,7 +131,16 @@ export function PaginaReportes() {
       return formatoMoneda(Number(valor));
     }
     if (key.includes('Fecha') || key === 'fecha' || key === 'fechaInicio' || key === 'fechaFin' || key === 'fechaRegistro' || key === 'fechaIngreso' || key === 'fechaEntrega') {
-      return new Date(String(valor)).toLocaleDateString('es-ES');
+      // Parsear 'yyyy-MM-dd' como fecha LOCAL para evitar desface de zona horaria
+      const fechaStr = String(valor);
+      let d: Date;
+      if (/^\d{4}-\d{2}-\d{2}$/.test(fechaStr)) {
+        const [anio, mes, dia] = fechaStr.split('-').map(Number);
+        d = new Date(anio, mes - 1, dia);
+      } else {
+        d = new Date(fechaStr);
+      }
+      return d.toLocaleDateString('es-ES');
     }
     return String(valor);
   };
