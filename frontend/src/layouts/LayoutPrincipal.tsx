@@ -347,10 +347,10 @@ export function LayoutPrincipal({ children }: LayoutPrincipalProps) {
             />
           </Box>
 
-          <IconButton onClick={manejarClicNotificaciones} aria-label="Notificaciones">
+          <IconButton sx={{ color: 'text.primary' }} onClick={manejarClicNotificaciones} aria-label="Notificaciones">
             <Notifications />
           </IconButton>
-          <IconButton onClick={alternarTemaConIcono} aria-label={temaOscuro ? 'Modo claro' : 'Modo oscuro'}>
+          <IconButton sx={{ color: 'text.primary' }} onClick={alternarTemaConIcono} aria-label={temaOscuro ? 'Modo claro' : 'Modo oscuro'}>
             {temaOscuro ? <LightMode /> : <DarkMode />}
           </IconButton>
           <IconButton onClick={manejarClicMenu} aria-label="Menú usuario">

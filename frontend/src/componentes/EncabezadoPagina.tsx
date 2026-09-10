@@ -19,13 +19,15 @@ interface EncabezadoPaginaProps {
   titulo: string;
   descripcion?: string;
   acciones?: ReactNode;
+  /** Color MUI para la descripción (default: 'text.secondary'). Usá 'text.primary' para mayor contraste en modo oscuro. */
+  colorDescripcion?: 'text.primary' | 'text.secondary' | 'text.disabled' | 'error' | 'info' | 'success' | 'warning' | 'inherit';
 }
 
 /**
  * Cabecera de página estilo Soft UI: breadcrumb pequeño arriba,
  * título en negrita debajo y acciones opcionales a la derecha.
  */
-export function EncabezadoPagina({ titulo, descripcion, acciones }: EncabezadoPaginaProps) {
+export function EncabezadoPagina({ titulo, descripcion, acciones, colorDescripcion }: EncabezadoPaginaProps) {
   const { pathname } = useLocation();
   const etiqueta = etiquetaPorRuta[pathname] || titulo;
 
@@ -80,7 +82,7 @@ export function EncabezadoPagina({ titulo, descripcion, acciones }: EncabezadoPa
             {titulo}
           </Typography>
           {descripcion && (
-            <Typography variant="body1" color="text.secondary">
+            <Typography variant="body1" color={colorDescripcion ?? 'text.secondary'}>
               {descripcion}
             </Typography>
           )}
