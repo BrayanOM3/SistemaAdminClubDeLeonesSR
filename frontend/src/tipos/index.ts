@@ -5,3 +5,4 @@ export * from './campana';
 export * from './voluntario';
 export * from './ayudaSocial';
 export * from './actividad';
+export * from './calendario';

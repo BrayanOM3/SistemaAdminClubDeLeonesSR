@@ -31,6 +31,12 @@ export const endpoints = {
     base: '/usuarios',
     porId: (id: string) => `/usuarios/${id}`,
   },
+  calendario: {
+    base: '/calendario',
+    rango: (desde: string, hasta: string) => `/calendario?desde=${desde}&hasta=${hasta}`,
+    donacionesDelDia: (fecha: string) => `/calendario/${fecha}/donaciones`,
+    ayudasSocialesDelDia: (fecha: string) => `/calendario/${fecha}/ayudas-sociales`,
+  },
   reportes: {
     base: '/reportes',
     beneficiarios: '/reportes/beneficiarios',

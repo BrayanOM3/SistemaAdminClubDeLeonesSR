@@ -28,6 +28,7 @@ import {
   AttachMoney,
   MedicalServices,
   Event,
+  CalendarMonth,
   Assessment,
   Person,
   Settings,
@@ -51,6 +52,7 @@ const itemsMenu = [
   { ruta: '/donaciones', icono: <AttachMoney />, etiqueta: 'Donaciones' },
   { ruta: '/ayudas-sociales', icono: <MedicalServices />, etiqueta: 'Ayudas Sociales' },
   { ruta: '/actividades', icono: <Event />, etiqueta: 'Actividades' },
+  { ruta: '/calendario', icono: <CalendarMonth />, etiqueta: 'Calendario' },
   { ruta: '/reportes', icono: <Assessment />, etiqueta: 'Reportes' },
 ];
 

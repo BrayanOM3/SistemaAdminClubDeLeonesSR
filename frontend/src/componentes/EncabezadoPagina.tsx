@@ -11,6 +11,7 @@ const etiquetaPorRuta: Record<string, string> = {
   '/donaciones': 'Donaciones',
   '/ayudas-sociales': 'Ayudas Sociales',
   '/actividades': 'Actividades',
+  '/calendario': 'Calendario',
   '/reportes': 'Reportes',
 };
 

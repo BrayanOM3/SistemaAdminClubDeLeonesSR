@@ -10,6 +10,7 @@ import { PaginaCampanas } from '../paginas/campanas/PaginaCampanas';
 import { PaginaVoluntarios } from '../paginas/voluntarios/PaginaVoluntarios';
 import { PaginaAyudasSociales } from '../paginas/ayudasSociales/PaginaAyudasSociales';
 import { PaginaActividades } from '../paginas/actividades/PaginaActividades';
+import { PaginaCalendario } from '../paginas/calendario/PaginaCalendario';
 import { PaginaReportes } from '../paginas/reportes/PaginaReportes';
 
 function LayoutProtegido() {
@@ -40,6 +41,7 @@ export const router = createBrowserRouter([
       { path: '/voluntarios', element: <PaginaVoluntarios /> },
       { path: '/ayudas-sociales', element: <PaginaAyudasSociales /> },
       { path: '/actividades', element: <PaginaActividades /> },
+      { path: '/calendario', element: <PaginaCalendario /> },
       { path: '/reportes', element: <PaginaReportes /> },
     ],
   },

@@ -8,6 +8,9 @@ export interface DonacionDto {
   reciboNumero?: string;
   campanaId?: string;
   voluntarioId?: string;
+  /** Nombres expandidos. Solo los envía GET /api/v1/calendario/{fecha}/donaciones (detalle del día). */
+  nombreCampana?: string;
+  nombreVoluntario?: string;
 }
 
 export interface CrearDonacionDto {
