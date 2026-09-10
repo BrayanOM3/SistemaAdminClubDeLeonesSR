@@ -20,15 +20,17 @@ type FormularioActividadData = z.infer<typeof esquemaActividad>;
 
 interface FormularioActividadProps {
   inicial?: ActividadDto;
+  /** Fecha 'yyyy-MM-dd' para precargar 'Fecha y hora' al crear desde el calendario (hora = actual). */
+  fechaInicial?: string;
   onSubmit: (data: CrearActividadDto | ActualizarActividadDto) => Promise<void>;
 }
 
-export function FormularioActividad({ inicial, onSubmit }: FormularioActividadProps) {
+export function FormularioActividad({ inicial, fechaInicial, onSubmit }: FormularioActividadProps) {
   const valoresIniciales: FormularioActividadData = {
     nombre: inicial?.nombre || '',
     descripcion: inicial?.descripcion || '',
     tipo: (inicial?.tipo as FormularioActividadData['tipo']) || 'Reunion',
-    fecha: inicial?.fecha ? inicial.fecha.substring(0, 16) : new Date().toISOString().substring(0, 16),
+    fecha: inicial?.fecha ? inicial.fecha.substring(0, 16) : (fechaInicial ? `${fechaInicial}T${new Date().toISOString().substring(11, 16)}` : new Date().toISOString().substring(0, 16)),
     lugar: inicial?.lugar || '',
     campanaId: inicial?.campanaId || null,
   };

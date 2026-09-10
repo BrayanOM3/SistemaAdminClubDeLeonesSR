@@ -84,6 +84,8 @@ export function eventoAEventoFullCalendar(evento: EventoCalendarioDto, modoOscur
     end: evento.fechaFin ? diaSiguiente(evento.fechaFin) : undefined,
     allDay: true,
     display: 'auto',
+    editable: !evento.esAgregado,
+    durationEditable: evento.tipo === 'Campana',
     backgroundColor: color.fondo,
     borderColor: color.fondo,
     textColor: color.texto,

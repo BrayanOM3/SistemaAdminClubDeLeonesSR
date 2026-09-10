@@ -19,14 +19,16 @@ type FormularioCampanaData = z.infer<typeof esquemaCampana>;
 
 interface FormularioCampanaProps {
   inicial?: CampanaDto;
+  /** Fecha 'yyyy-MM-dd' para precargar 'Fecha de inicio' al crear desde el calendario. */
+  fechaInicial?: string;
   onSubmit: (data: CrearCampanaDto | ActualizarCampanaDto) => Promise<void>;
 }
 
-export function FormularioCampana({ inicial, onSubmit }: FormularioCampanaProps) {
+export function FormularioCampana({ inicial, fechaInicial, onSubmit }: FormularioCampanaProps) {
   const valoresIniciales: FormularioCampanaData = {
     nombre: inicial?.nombre || '',
     descripcion: inicial?.descripcion || '',
-    fechaInicio: inicial?.fechaInicio ? inicial.fechaInicio.split('T')[0] : new Date().toISOString().split('T')[0],
+    fechaInicio: inicial?.fechaInicio ? inicial.fechaInicio.split('T')[0] : (fechaInicial ?? new Date().toISOString().split('T')[0]),
     fechaFin: inicial?.fechaFin ? inicial.fechaFin.split('T')[0] : '',
     objetivoMonto: inicial?.objetivoMonto ?? null,
     estado: (inicial?.estado as FormularioCampanaData['estado']) || 'Planificada',

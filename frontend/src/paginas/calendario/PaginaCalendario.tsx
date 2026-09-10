@@ -5,22 +5,35 @@ import { Campaign, Event, Paid, MedicalServices, ErrorOutlined } from '@mui/icon
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
 import esLocale from '@fullcalendar/core/locales/es';
-import type { DatesSetArg, EventClickArg } from '@fullcalendar/core';
+import type { DatesSetArg, EventClickArg, EventApi, EventDropArg } from '@fullcalendar/core';
+import type { DateClickArg, EventResizeDoneArg } from '@fullcalendar/interaction';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { EncabezadoPagina } from '../../componentes/EncabezadoPagina';
+import { DialogoFormulario } from '../../componentes/DialogoFormulario';
 import { FiltrosCalendario } from '../../componentes/calendario/FiltrosCalendario';
 import { DialogoDetalle } from '../../componentes/calendario/DialogoDetalle';
+import { DialogoElegirTipo } from '../../componentes/calendario/DialogoElegirTipo';
+import type { TipoCrearCalendario } from '../../componentes/calendario/DialogoElegirTipo';
+import { DialogoConfirmarMover } from '../../componentes/calendario/DialogoConfirmarMover';
 import { EsqueletoLista } from '../../componentes/EstadoCargando';
 import { EstadoVacio } from '../../componentes/EstadoVacio';
 import { useCalendario, useDonacionesDelDia, useAyudasDelDia } from '../../hooks/useCalendario';
-import { useCampana } from '../../hooks/useCampanas';
-import { useActividad } from '../../hooks/useActividades';
+import { useCampana, useCrearCampana, useActualizarCampana } from '../../hooks/useCampanas';
+import { useActividad, useCrearActividad, useActualizarActividad } from '../../hooks/useActividades';
+import { campanaServicio } from '../../servicios/campanaServicio';
+import { actividadServicio } from '../../servicios/actividadServicio';
+import { FormularioCampana } from '../campanas/FormularioCampana';
+import { FormularioActividad } from '../actividades/FormularioActividad';
+import { obtenerMensajeError } from '../../utilidades/manejoErrores';
+import { useStoreUI } from '../../store/storeUi';
 import { idUtilizable } from '../../tipos/calendario';
 import type { TipoEventoCalendario } from '../../tipos/calendario';
 import type { DonacionDto } from '../../tipos/donacion';
-import type { CampanaDto } from '../../tipos/campana';
-import type { ActividadDto } from '../../tipos/actividad';
+import type { CampanaDto, CrearCampanaDto, ActualizarCampanaDto } from '../../tipos/campana';
+import type { ActividadDto, CrearActividadDto, ActualizarActividadDto } from '../../tipos/actividad';
 import { ETIQUETA_TIPO, COLORES_EVENTO, TIPOS_EVENTO, eventoAEventoFullCalendar, diaAnterior, hoyYYYYMMDD } from '../../utilidades/calendario';
 import { formatoFechaCorta, formatoMoneda, formatoFechaLarga } from '../../utilidades/formateadores';
 import { formateadores } from '../../componentes/TablaDatos';
@@ -42,6 +55,30 @@ interface EventoSeleccionado {
   titulo: string;
   cantidadAgregada?: number | null;
   montoTotalAgregado?: number | null;
+}
+
+/** Movimiento/re-dimensionado pendiente de confirmar. Retiene el arg de FC para revertir si el PUT falla. */
+interface MovimientoPendiente {
+  arg: EventDropArg | EventResizeDoneArg;
+  tipoOperacion: 'drop' | 'resize';
+  nuevoInicio: string;
+  nuevoFin: string | null;
+  titulo: string;
+  esCampana: boolean;
+}
+
+/** Reemplaza el día de una fecha ISO conservando la HH:mm original (UTC explícito). */
+function conDiaNuevo(fechaIso: string, nuevoDia: string): string {
+  const hhmm = fechaIso.includes('T') ? fechaIso.slice(11, 16) : '00:00';
+  return `${nuevoDia}T${hhmm}:00Z`;
+}
+
+/** Deriva inicio/fin de un evento tras drop/resize: el end de FC es exclusivo → lo vuelve inclusivo. */
+function nuevoRangoSegunEvento(evento: EventApi): { nuevoInicio: string; nuevoFin: string | null } {
+  const nuevoInicio = evento.startStr.slice(0, 10);
+  const endStr = evento.endStr ? evento.endStr.slice(0, 10) : '';
+  const fechaFin = endStr ? diaAnterior(endStr) : null;
+  return { nuevoInicio, nuevoFin: fechaFin && fechaFin !== nuevoInicio ? fechaFin : null };
 }
 
 // ── Fila etiqueta → valor del modal de detalle ──────────────────────────
@@ -260,6 +297,19 @@ export function PaginaCalendario() {
   const [seleccionado, setSeleccionado] = useState<EventoSeleccionado | null>(null);
   const [fechaInicial] = useState(() => hoyYYYYMMDD());
 
+  // Fase 3: creación desde un día clickeado y movimiento por drag & drop.
+  const [crearFecha, setCrearFecha] = useState<string | null>(null); // día all-day clickeado
+  const [crearTipo, setCrearTipo] = useState<TipoCrearCalendario | null>(null);
+  const [movimientoPendiente, setMovimientoPendiente] = useState<MovimientoPendiente | null>(null);
+
+  const { agregarNotificacion } = useStoreUI();
+  const queryClient = useQueryClient();
+
+  const { mutateAsync: crearCampana, isPending: creandoCampana } = useCrearCampana();
+  const { mutateAsync: crearActividad, isPending: creandoActividad } = useCrearActividad();
+  const { mutateAsync: actualizarCampana, isPending: actualizandoCampana } = useActualizarCampana();
+  const { mutateAsync: actualizarActividad, isPending: actualizandoActividad } = useActualizarActividad();
+
   // isPending solo es true en la primera carga (keepPreviousData lo mantiene false al navegar de mes).
   const { data: eventos = [], isError, isPending } = useCalendario(rango?.desde ?? '', rango?.hasta ?? '');
 
@@ -280,6 +330,135 @@ export function PaginaCalendario() {
     setSeleccionado({ ...ep, titulo: arg.event.title });
   }, []);
 
+  // ── Fase 3: crear desde un día vacío (dateClick) ─────────────────────────
+  const manejarDateClick = useCallback(
+    (arg: DateClickArg) => {
+      if (!arg.allDay) return; // en timeGrid, el clic sobre una franja horaria no crea
+      if (crearFecha || crearTipo || movimientoPendiente || seleccionado) return;
+      setCrearFecha(arg.dateStr);
+    },
+    [crearFecha, crearTipo, movimientoPendiente, seleccionado],
+  );
+
+  const cerrarCreacion = useCallback(() => {
+    setCrearFecha(null);
+    setCrearTipo(null);
+  }, []);
+
+  // ── Fase 3: mover / redimensionar (solo Campaña/Actividad; los agregados ya son no-editable en el mapper) ──
+  const manejarEventDrop = useCallback((arg: EventDropArg) => {
+    const ep = arg.event.extendedProps as Omit<EventoSeleccionado, 'titulo'>;
+    if (ep.esAgregado || (ep.tipo !== 'Campana' && ep.tipo !== 'Actividad')) return; // defensivo
+    setMovimientoPendiente({
+      arg,
+      tipoOperacion: 'drop',
+      ...nuevoRangoSegunEvento(arg.event),
+      titulo: arg.event.title,
+      esCampana: ep.tipo === 'Campana',
+    });
+  }, []);
+
+  const manejarEventResize = useCallback((arg: EventResizeDoneArg) => {
+    const ep = arg.event.extendedProps as Omit<EventoSeleccionado, 'titulo'>;
+    if (ep.esAgregado || ep.tipo !== 'Campana') return; // solo Campaña redimensionable
+    setMovimientoPendiente({
+      arg,
+      tipoOperacion: 'resize',
+      ...nuevoRangoSegunEvento(arg.event),
+      titulo: arg.event.title,
+      esCampana: true,
+    });
+  }, []);
+
+  const gestionarRevert = useCallback(() => {
+    if (movimientoPendiente) movimientoPendiente.arg.revert();
+    setMovimientoPendiente(null);
+  }, [movimientoPendiente]);
+
+  // Persiste el movimiento: fetch completo → armar DTO → PUT (backend sin PATCH).
+  const confirmarMovimiento = useCallback(async () => {
+    if (!movimientoPendiente) return;
+    const { arg, nuevoInicio, nuevoFin, esCampana } = movimientoPendiente;
+    const ep = arg.event.extendedProps as Omit<EventoSeleccionado, 'titulo'>;
+    const id = idUtilizable(ep.id);
+    if (!id) {
+      arg.revert();
+      setMovimientoPendiente(null);
+      return;
+    }
+    try {
+      if (esCampana) {
+        const campana = await queryClient.ensureQueryData({
+          queryKey: ['campanas', id],
+          queryFn: () => campanaServicio.obtenerPorId(id),
+        });
+        await actualizarCampana({
+          id,
+          dto: {
+            nombre: campana.nombre,
+            descripcion: campana.descripcion,
+            fechaInicio: nuevoInicio,
+            fechaFin: nuevoFin ?? undefined,
+            objetivoMonto: campana.objetivoMonto,
+            estado: campana.estado,
+            tipo: campana.tipo,
+          },
+        });
+      } else {
+        const actividad = await queryClient.ensureQueryData({
+          queryKey: ['actividades', id],
+          queryFn: () => actividadServicio.obtenerPorId(id),
+        });
+        await actualizarActividad({
+          id,
+          dto: {
+            nombre: actividad.nombre,
+            descripcion: actividad.descripcion,
+            tipo: actividad.tipo,
+            fecha: conDiaNuevo(actividad.fecha, nuevoInicio),
+            lugar: actividad.lugar,
+            campanaId: actividad.campanaId,
+          },
+        });
+      }
+      queryClient.invalidateQueries({ queryKey: ['calendario'] });
+      agregarNotificacion({ tipo: 'exito', mensaje: 'Evento movido correctamente' });
+      setMovimientoPendiente(null); // sin revert: el refetch confirma la posición nueva
+    } catch (error) {
+      arg.revert();
+      agregarNotificacion({ tipo: 'error', mensaje: obtenerMensajeError(error, 'No se pudo mover el evento') });
+      setMovimientoPendiente(null);
+    }
+  }, [movimientoPendiente, actualizarCampana, actualizarActividad, agregarNotificacion, queryClient]);
+
+  const manejarCrearCampana = useCallback(
+    async (dto: CrearCampanaDto | ActualizarCampanaDto) => {
+      try {
+        await crearCampana(dto as CrearCampanaDto);
+        queryClient.invalidateQueries({ queryKey: ['calendario'] });
+        agregarNotificacion({ tipo: 'exito', mensaje: 'Campaña creada correctamente' });
+        cerrarCreacion();
+      } catch (error) {
+        agregarNotificacion({ tipo: 'error', mensaje: obtenerMensajeError(error, 'No se pudo crear la campaña') });
+      }
+    },
+    [crearCampana, agregarNotificacion, queryClient, cerrarCreacion],
+  );
+
+  const manejarCrearActividad = useCallback(
+    async (dto: CrearActividadDto | ActualizarActividadDto) => {
+      try {
+        await crearActividad(dto as CrearActividadDto);
+        queryClient.invalidateQueries({ queryKey: ['calendario'] });
+        agregarNotificacion({ tipo: 'exito', mensaje: 'Actividad creada correctamente' });
+        cerrarCreacion();
+      } catch (error) {
+        agregarNotificacion({ tipo: 'error', mensaje: obtenerMensajeError(error, 'No se pudo crear la actividad') });
+      }
+    },
+    [crearActividad, agregarNotificacion, queryClient, cerrarCreacion],
+  );
+
   // Detalle singular (Campaña/Actividad): el id Guid.Empty de los agregados se normaliza a null.
   const idDetalle = useMemo(() => {
     if (!seleccionado || seleccionado.esAgregado) return '';
@@ -298,14 +477,15 @@ export function PaginaCalendario() {
   const varsFullCalendar = useMemo<CSSProperties>(() => {
     const p = theme.palette;
     const neutroFondo = esOscuro ? 'rgba(255,255,255,0.03)' : 'rgba(15,36,71,0.02)';
-    const hoyFondo = esOscuro ? 'rgba(253,185,19,0.10)' : 'rgba(0,51,141,0.045)';
+    const hoyFondo = esOscuro ? 'rgba(253,185,19,0.18)' : 'rgba(0,51,141,0.045)';
+    const bordeGrid = esOscuro ? 'rgba(255,255,255,0.12)' : p.divider;
     return {
       '--fc-page-bg-color': p.background.paper,
       '--fc-neutral-bg-color': neutroFondo,
       '--fc-neutral-text-color': p.text.primary,
       '--fc-page-text-color': p.text.primary,
       '--fc-text-color': p.text.primary,
-      '--fc-border-color': p.divider,
+      '--fc-border-color': bordeGrid,
       '--fc-button-text-color': p.primary.contrastText,
       '--fc-button-bg-color': p.primary.main,
       '--fc-button-border-color': p.primary.main,
@@ -371,11 +551,26 @@ export function PaginaCalendario() {
     }
   }
 
+  // ── Textos del diálogo de confirmación de movimiento ────────────────────
+  const tituloConfirmarMover = movimientoPendiente
+    ? movimientoPendiente.esCampana
+      ? movimientoPendiente.tipoOperacion === 'resize'
+        ? 'Ajustar campaña'
+        : 'Mover campaña'
+      : 'Mover actividad'
+    : '';
+  const textoConfirmarMover = movimientoPendiente
+    ? movimientoPendiente.esCampana
+      ? `¿Mover la campaña "${movimientoPendiente.titulo}" al ${formatoFechaCorta(movimientoPendiente.nuevoInicio)}${movimientoPendiente.nuevoFin ? ` – ${formatoFechaCorta(movimientoPendiente.nuevoFin)}` : ''}?`
+      : `¿Mover la actividad "${movimientoPendiente.titulo}" al ${formatoFechaCorta(movimientoPendiente.nuevoInicio)}?`
+    : '';
+
   return (
     <Box>
       <EncabezadoPagina
         titulo="Calendario"
         descripcion="Actividades, campañas, donaciones y ayudas sociales del club en un vistazo."
+        colorDescripcion="text.primary"
         acciones={
           <Chip
             variant="outlined"
@@ -429,7 +624,7 @@ export function PaginaCalendario() {
 
           {/* FullCalendar siempre montado — datesSet dispara rango → la query se habilita */}
           <FullCalendar
-            plugins={[dayGridPlugin, timeGridPlugin]}
+            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             initialView="dayGridMonth"
             initialDate={fechaInicial}
             headerToolbar={{
@@ -442,6 +637,10 @@ export function PaginaCalendario() {
             dayMaxEvents={3}
             events={eventosCalendario}
             eventClick={manejarEventClick}
+            editable
+            dateClick={manejarDateClick}
+            eventDrop={manejarEventDrop}
+            eventResize={manejarEventResize}
             datesSet={manejarDatesSet}
             height="auto"
             /* timeGrid mantiene el texto allDay en español */
@@ -462,6 +661,49 @@ export function PaginaCalendario() {
       >
         {contenidoModal}
       </DialogoDetalle>
+
+      {/* ── Fase 3: crear un evento desde un día vacío ── */}
+      <DialogoElegirTipo
+        open={Boolean(crearFecha) && !crearTipo}
+        fecha={crearFecha ?? ''}
+        onCerrar={cerrarCreacion}
+        onElegir={setCrearTipo}
+      />
+
+      {crearFecha && crearTipo && (
+        <DialogoFormulario
+          open
+          onClose={cerrarCreacion}
+          titulo={crearTipo === 'Campana' ? 'Nueva campaña' : 'Nueva actividad'}
+          ancho="lg"
+          cargando={creandoCampana || creandoActividad}
+        >
+          {crearTipo === 'Campana' ? (
+            <FormularioCampana
+              key={`campana-${crearFecha}`}
+              fechaInicial={crearFecha}
+              onSubmit={manejarCrearCampana}
+            />
+          ) : (
+            <FormularioActividad
+              key={`actividad-${crearFecha}`}
+              fechaInicial={crearFecha}
+              onSubmit={manejarCrearActividad}
+            />
+          )}
+        </DialogoFormulario>
+      )}
+
+      {/* ── Fase 3: confirmar el movimiento/ajuste antes de persistir ── */}
+      <DialogoConfirmarMover
+        open={Boolean(movimientoPendiente)}
+        titulo={tituloConfirmarMover}
+        mensaje={textoConfirmarMover}
+        etiquetaConfirmar={movimientoPendiente?.tipoOperacion === 'resize' ? 'Ajustar' : 'Mover'}
+        onCancelar={gestionarRevert}
+        onConfirmar={confirmarMovimiento}
+        cargando={actualizandoCampana || actualizandoActividad}
+      />
     </Box>
   );
 }
